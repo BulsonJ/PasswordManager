@@ -6,11 +6,11 @@ struct Account {
 	string password;
 };
 
-class PasswordStorer
+class PasswordStorage
 {
 public:
-	PasswordStorer(string file_name);
-	~PasswordStorer();
+	PasswordStorage(string file_name);
+	~PasswordStorage();
 	bool check_duplicate_username(const string name) const;
 	void save_to_file(const Account& s) const;
 protected:

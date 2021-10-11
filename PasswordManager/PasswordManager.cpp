@@ -1,5 +1,5 @@
 #include <iostream>
-#include "PasswordStorer.h"
+#include "PasswordStorage.h"
 using namespace std;
 
 int menu_input() {
@@ -29,12 +29,14 @@ int collatz(int input, int count) {
 string encrypt_string(string input) {
 	string encrypted = "";
 	int previousNumber = 0;
+
 	for (int i = 0; i < input.size(); ++i) {
 		int number_of_turns = 0;
 		number_of_turns = collatz(int(input[i]) + previousNumber, 0);
 		encrypted += to_string(number_of_turns);
 		previousNumber = number_of_turns;
 	}
+
 	return encrypted;
 }
 
@@ -46,7 +48,7 @@ void option_create_password() {
 	cout << "Please enter a password" << endl;
 	cin >> password;
 
-	PasswordStorer storage("password.txt");
+	PasswordStorage storage("password.txt");
 	Account newAccount;
 	newAccount.username = username;
 	newAccount.password = password;
@@ -54,9 +56,6 @@ void option_create_password() {
 }
 
 int main(){
-
-	
-	bool exitProgram = false;
 	int input = menu_input();
 	switch (input)
 	{
@@ -71,7 +70,7 @@ int main(){
 	case(4):
 		break;
 	case(5):
-		exitProgram = true;
+		return 0;
 	}
 
 	return 0;

@@ -1,17 +1,17 @@
-#include "PasswordStorer.h"
 #include <iostream>
 #include <fstream>
 #include <locale>
+#include "PasswordStorage.h"
 
-PasswordStorer::PasswordStorer(string file_name) {
+PasswordStorage::PasswordStorage(string file_name) {
 	this->file_name = file_name;
 }
 
-PasswordStorer::~PasswordStorer() {
+PasswordStorage::~PasswordStorage() {
 
 }
 
-bool PasswordStorer::check_duplicate_username(string name) const {
+bool PasswordStorage::check_duplicate_username(string name) const {
 	string myText;
 
 	ifstream passwordFile("filename.txt");
@@ -29,7 +29,7 @@ bool PasswordStorer::check_duplicate_username(string name) const {
 	return false;
 }
 
-void PasswordStorer::save_to_file(const Account& s) const throw (invalid_argument) {
+void PasswordStorage::save_to_file(const Account& s) const throw (invalid_argument) {
 	check_duplicate_username(s.username) ? NULL : throw invalid_argument("username already exists" + s.username);
 
 	ofstream data_file;
