@@ -11,10 +11,11 @@ PasswordStorage::~PasswordStorage() {
 
 }
 
-bool PasswordStorage::check_duplicate_username(string name) const {
+bool PasswordStorage::check_duplicate_username(const string name) const {
 	string myText;
 
-	ifstream passwordFile("filename.txt");
+	ifstream passwordFile;
+	passwordFile.open(file_name.c_str());
 	
 	while (getline(passwordFile, myText)) {
 		string username = myText.substr(0, myText.find(" "));
@@ -30,7 +31,9 @@ bool PasswordStorage::check_duplicate_username(string name) const {
 }
 
 void PasswordStorage::save_to_file(const Account& s) const throw (invalid_argument) {
-	check_duplicate_username(s.username) ? NULL : throw invalid_argument("username already exists" + s.username);
+	if (check_duplicate_username(s.username)) {
+		throw invalid_argument("username already exists" + s.username);
+	}
 
 	ofstream data_file;
 
