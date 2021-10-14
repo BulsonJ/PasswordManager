@@ -3,6 +3,8 @@
 #include "Encrypter.h"
 using namespace std;
 
+PasswordStorage storage("password.txt");
+
 int menu_input() {
 	cout << "Select an option:" << endl;
 	cout << "1. Create username/password" << endl;
@@ -24,17 +26,39 @@ void option_create_password() {
 	cout << "Please enter a password" << endl;
 	cin >> password;
 
-	PasswordStorage storage("password.txt");
-	Account newAccount;
-	newAccount.username = username;
-	newAccount.password = Encrypter::encrypt_string(password);
+	
 	try {
-		storage.save_to_file(newAccount);
+		storage.save_to_file(username, Encrypter::encrypt_string(password));
 	}
 	catch (const std::invalid_argument& e) {
-		cout << "Username already exists" << endl;
+		cout << e.what() << endl;
 	}
 }
+
+void option_check_password() {
+	int triesRemaining = 3;
+	bool foundPassword = false;
+	string username;
+	string password;
+	cout << "Please enter a username:" << endl;
+	cin >> username;
+
+	while (triesRemaining > 0 && !foundPassword) {
+		cout << "Please enter a password(" << triesRemaining << " tries remaining):" << endl;
+		cin >> password;
+		triesRemaining--;
+
+		if (Encrypter::encrypt_string(password) == storage.get_password(username)) {
+			cout << "Success!" << endl;
+			foundPassword = true;
+		}
+		else {
+			cout << "Failure!" << endl;
+		}
+	}
+
+}
+
 
 int main(){
 	bool exit = false;
@@ -48,7 +72,7 @@ int main(){
 		case(1):
 			option_create_password();
 		case(2):
-			break;
+			option_check_password();
 		case(3):
 			break;
 		case(4):

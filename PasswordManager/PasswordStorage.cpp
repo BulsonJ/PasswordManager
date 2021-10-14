@@ -1,10 +1,24 @@
 #include <iostream>
 #include <fstream>
+#include <exception>
 #include <locale>
 #include "PasswordStorage.h"
 
 PasswordStorage::PasswordStorage(string file_name) {
 	this->file_name = file_name;
+
+	ifstream passwordFile;
+	passwordFile.open(file_name.c_str());
+
+	string myText;
+	while (getline(passwordFile, myText)) {
+		string username = myText.substr(0, myText.find(" "));
+		string password = myText.substr(myText.find(" ") + 1, myText.find("\n"));
+		
+		accounts.emplace(username, password);
+	}
+
+	passwordFile.close();
 }
 
 PasswordStorage::~PasswordStorage() {
@@ -12,27 +26,21 @@ PasswordStorage::~PasswordStorage() {
 }
 
 bool PasswordStorage::check_duplicate_username(const string name) const {
-	string myText;
-
-	ifstream passwordFile;
-	passwordFile.open(file_name.c_str());
-	
-	while (getline(passwordFile, myText)) {
-		string username = myText.substr(0, myText.find(" "));
-
-		if (username == name) {
-			passwordFile.close();
-			return true;
-		}
+	if (accounts.count(name)) {
+		return true;
 	}
-
-	passwordFile.close();
 	return false;
 }
 
-void PasswordStorage::save_to_file(const Account& s) const throw (invalid_argument) {
-	if (check_duplicate_username(s.username)) {
-		throw invalid_argument("username already exists" + s.username);
+string PasswordStorage::get_password(const string username) {
+	auto it = accounts.find(username);
+	if (it->first == username)
+		return it->second;
+}
+
+void PasswordStorage::save_to_file(const string username, const string password) throw (invalid_argument){
+	if (check_duplicate_username(username)) {
+		throw invalid_argument("username already exists: " + username);
 	}
 
 	ofstream data_file;
@@ -42,7 +50,9 @@ void PasswordStorage::save_to_file(const Account& s) const throw (invalid_argume
 	if (data_file.fail())
 		throw invalid_argument("no file exists " + file_name);
 
-	data_file << s.username << " " << s.password << endl;
+	data_file << username << " " << password << endl;
+	accounts.emplace(username, password);
+
 
 	data_file.close();
 }
