@@ -34,8 +34,7 @@ bool PasswordStorage::check_duplicate_username(const string name) const {
 
 string PasswordStorage::get_password(const string username) {
 	auto it = accounts.find(username);
-	if (it->first == username)
-		return it->second;
+	return it->second;
 }
 
 void PasswordStorage::save_to_file(const string username, const string password) throw (invalid_argument){

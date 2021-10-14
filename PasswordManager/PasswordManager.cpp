@@ -1,6 +1,7 @@
 #include <iostream>
 #include "PasswordStorage.h"
 #include "Encrypter.h"
+#include "PasswordTesting.h"
 using namespace std;
 
 PasswordStorage storage("password.txt");
@@ -74,7 +75,8 @@ int main(){
 		case(2):
 			option_check_password();
 		case(3):
-			break;
+			PasswordTesting::GeneratePasswords("passwordtest.txt");
+			cout << "Passwords saved to passwordtest.txt" << endl;
 		case(4):
 			break;
 		case(5):
