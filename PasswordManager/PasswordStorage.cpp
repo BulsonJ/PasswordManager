@@ -4,11 +4,14 @@
 #include <locale>
 #include "PasswordStorage.h"
 
-PasswordStorage::PasswordStorage(string file_name) {
+PasswordStorage::PasswordStorage(string file_name) throw (invalid_argument) {
 	this->file_name = file_name;
 
 	ifstream passwordFile;
 	passwordFile.open(file_name.c_str());
+
+	if (passwordFile.fail())
+		throw invalid_argument("no file exists " + file_name);
 
 	string myText;
 	while (getline(passwordFile, myText)) {

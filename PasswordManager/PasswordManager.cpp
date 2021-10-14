@@ -27,7 +27,6 @@ void option_create_password() {
 	cout << "Please enter a password" << endl;
 	cin >> password;
 
-	
 	try {
 		storage.save_to_file(username, Encrypter::encrypt_string(password));
 	}
@@ -72,11 +71,19 @@ int main(){
 			break;
 		case(1):
 			option_create_password();
+			break;
 		case(2):
 			option_check_password();
+			break;
 		case(3):
-			PasswordTesting::GeneratePasswords("passwordtest.txt");
+			try {
+				PasswordTesting::GeneratePasswords("passwordtest.txt");
+			}
+			catch (const std::invalid_argument& e) {
+				cout << e.what() << endl;
+			}
 			cout << "Passwords saved to passwordtest.txt" << endl;
+			break;
 		case(4):
 			break;
 		case(5):

@@ -2,7 +2,7 @@
 #include "Encrypter.h"
 #include <fstream>
 
-void PasswordTesting::GeneratePasswords(const string file_name) {
+void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_argument){
 	ofstream data_file;
 
 	data_file.open(file_name.c_str(), ios::trunc);
@@ -28,17 +28,19 @@ void PasswordTesting::GeneratePasswords(const string file_name) {
 		data_file << Encrypter::encrypt_string(password) << endl;
 	}
 	
-	length = 100;
+	length = 0;
 	for (int i = 10000; i < 20000; i++) {
 		if (i % 100 == 0) length++;
 		string password = "";
 
 		for (int x = 0; x < length; x++) {
-			password += char(rand() % 93 + 33);
+			char next_character = char(rand() % 93 + 33);
+			while (password.find(next_character) != string::npos) {
+				password += char(rand() % 93 + 33);
+			}
 		}
 		data_file << Encrypter::encrypt_string(password) << endl;
 	}
 
 	data_file.close();
-
 }
