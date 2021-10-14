@@ -2,6 +2,7 @@
 #include "PasswordStorage.h"
 #include "Encrypter.h"
 #include "PasswordTesting.h"
+#include "Timer.h"
 using namespace std;
 
 PasswordStorage storage("password.txt");
@@ -63,6 +64,7 @@ void option_check_password() {
 int main(){
 	bool exit = false;
 
+	Timer test;
 	while (!exit) {
 		int input = menu_input();
 		switch (input)
@@ -77,12 +79,14 @@ int main(){
 			break;
 		case(3):
 			try {
+				test.start();
 				PasswordTesting::GeneratePasswords("passwordtest.txt");
+				test.stop();
 			}
 			catch (const std::invalid_argument& e) {
 				cout << e.what() << endl;
 			}
-			cout << "Passwords saved to passwordtest.txt" << endl;
+			cout << "Passwords saved to passwordtest.txt(" << test.elapsedTime() / 1000.0 << " s taken)" << endl;
 			break;
 		case(4):
 			break;
