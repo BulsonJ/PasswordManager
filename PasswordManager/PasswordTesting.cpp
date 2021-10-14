@@ -16,7 +16,6 @@ void PasswordTesting::GeneratePasswords(const string file_name) {
 		random_letters[i] = char(rand() % 25 + 97);
 	}
 
-	string* passwords = new string[20000];
 	int length = 0;
 	for (int i = 0; i < 10000; i++) {
 		if (i % 100 == 0) length++;
@@ -26,8 +25,7 @@ void PasswordTesting::GeneratePasswords(const string file_name) {
 			password += random_letters[rand() % 10];
 		}
 
-		passwords[i] = Encrypter::encrypt_string(password);
-		data_file << passwords[i] << endl;
+		data_file << Encrypter::encrypt_string(password) << endl;
 	}
 	
 	length = 100;
@@ -38,13 +36,9 @@ void PasswordTesting::GeneratePasswords(const string file_name) {
 		for (int x = 0; x < length; x++) {
 			password += char(rand() % 93 + 33);
 		}
-		passwords[i] = Encrypter::encrypt_string(password);
-		data_file << passwords[i - 1] << endl;
+		data_file << Encrypter::encrypt_string(password) << endl;
 	}
 
 	data_file.close();
-
-	delete[] passwords;
-	passwords = nullptr;
 
 }
