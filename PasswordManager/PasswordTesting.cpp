@@ -3,6 +3,7 @@
 #include <fstream>
 
 void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_argument){
+	// refactor to use password storage class
 	ofstream data_file;
 
 	data_file.open(file_name.c_str(), ios::trunc);

@@ -61,11 +61,26 @@ void option_check_password() {
 
 }
 
+void option_generate_password() {
+	Timer test;
+	try {
+		test.start();
+		PasswordTesting::GeneratePasswords("passwordtest.txt");
+		test.stop();
+	}
+	catch (const std::invalid_argument& e) {
+		cout << e.what() << endl;
+	}
+	cout << "Passwords saved to passwordtest.txt(" << test.elapsedTime() / 1000.0 << " s taken)" << endl;
+}
+
+void option_decrypt_password() {
+	PasswordSecurity::decrypt_password("202015463615");
+}
 
 int main(){
 	bool exit = false;
 
-	Timer test;
 	while (!exit) {
 		int input = menu_input();
 		switch (input)
@@ -79,17 +94,10 @@ int main(){
 			option_check_password();
 			break;
 		case(3):
-			try {
-				test.start();
-				PasswordTesting::GeneratePasswords("passwordtest.txt");
-				test.stop();
-			}
-			catch (const std::invalid_argument& e) {
-				cout << e.what() << endl;
-			}
-			cout << "Passwords saved to passwordtest.txt(" << test.elapsedTime() / 1000.0 << " s taken)" << endl;
+			option_generate_password();
 			break;
 		case(4):
+			option_decrypt_password();
 			break;
 		case(5):
 			exit = true;
