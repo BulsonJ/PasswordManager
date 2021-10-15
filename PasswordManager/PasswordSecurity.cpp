@@ -29,13 +29,13 @@ string PasswordSecurity::decrypt_password(const string s) {
 	string current_numbers = "";
 
 	// if possible values = 0, go to next number and start again
-	vector<vector<string>> possible_full_word_values;
+	vector<vector<int>> possible_full_word_ascii_values;
 	int offset = 0;
 	for (int i = 0; i < s.length(); ++i) {
 		current_numbers += s[i];
-		vector<pair<string, int>> collatz_values = get_ascii_collatz_values(offset);
+		vector<int> possible_values;
 
-		vector<string> possible_values;
+		vector<pair<int, int>> collatz_values = get_ascii_collatz_values(offset);
 		// For each value in the collatz, if matches current numbers then add to possible values
 		for (auto it = collatz_values.begin(); it != collatz_values.end(); it++) {
 			if (std::stoi(current_numbers) == it->second) {
@@ -46,17 +46,17 @@ string PasswordSecurity::decrypt_password(const string s) {
 		// If there are possible values, emplace the list back
 		if (possible_values.size() > 0) {
 			offset = std::stoi(current_numbers);
-			possible_full_word_values.emplace_back(possible_values);
+			possible_full_word_ascii_values.emplace_back(possible_values);
 			current_numbers = "";
 		}
 	}
 
 	string decrypted_password;
-	for (auto it = possible_full_word_values.begin(); it != possible_full_word_values.end(); it++) {
-		
+	for (auto it = possible_full_word_ascii_values.begin(); it != possible_full_word_ascii_values.end(); it++) {
+		decrypted_password += char((*it)[0]);
 	}
 
-	return s;
+	return decrypted_password;
 }
 
 void PasswordSecurity::print_ascii_collatz_values(int offset) {
@@ -65,12 +65,10 @@ void PasswordSecurity::print_ascii_collatz_values(int offset) {
 	}
 }
 
-vector<pair<string, int>> PasswordSecurity::get_ascii_collatz_values(int offset) {
-	vector<pair<string, int>> values;
+vector<pair<int, int>> PasswordSecurity::get_ascii_collatz_values(int offset) {
+	vector<pair<int, int>> values;
 	for (int i = 97; i < 97 + 25 + 1; i++) {
-		string s;
-		s += char(i);
-		values.emplace_back(make_pair(s, collatz(i + offset)));
+		values.emplace_back(make_pair(i, collatz(i + offset)));
 	}
 	return values;
 }
