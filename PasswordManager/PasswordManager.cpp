@@ -75,7 +75,11 @@ void option_generate_password() {
 }
 
 void option_decrypt_password() {
-	PasswordSecurity::decrypt_password("202015463615");
+
+	//PasswordSecurity::decrypt_password("202015463615");
+	vector<int>* password;
+	password = PasswordSecurity::decrypt_password_r("20953985");
+	int y;
 }
 
 int main(){
