@@ -1,11 +1,12 @@
 #include <iostream>
 #include "PasswordStorage.h"
-#include "Encrypter.h"
+#include "AccountStorage.h"
+#include "PasswordSecurity.h"
 #include "PasswordTesting.h"
 #include "Timer.h"
 using namespace std;
 
-PasswordStorage storage("password.txt");
+AccountStorage storage("password.txt");
 
 int menu_input() {
 	cout << "Select an option:" << endl;
@@ -29,7 +30,7 @@ void option_create_password() {
 	cin >> password;
 
 	try {
-		storage.save_to_file(username, Encrypter::encrypt_string(password));
+		storage.save_to_file(username, PasswordSecurity::encrypt_string(password));
 	}
 	catch (const std::invalid_argument& e) {
 		cout << e.what() << endl;
@@ -49,7 +50,7 @@ void option_check_password() {
 		cin >> password;
 		triesRemaining--;
 
-		if (Encrypter::encrypt_string(password) == storage.get_password(username)) {
+		if (PasswordSecurity::encrypt_string(password) == storage.get_password(username)) {
 			cout << "Success!" << endl;
 			foundPassword = true;
 		}

@@ -1,5 +1,5 @@
 #include "PasswordTesting.h"
-#include "Encrypter.h"
+#include "PasswordSecurity.h"
 #include <fstream>
 
 void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_argument){
@@ -25,7 +25,7 @@ void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_a
 			password += random_letters[rand() % 10];
 		}
 
-		data_file << Encrypter::encrypt_string(password) << endl;
+		data_file << PasswordSecurity::encrypt_string(password) << endl;
 	}
 	
 	length = 0;
@@ -39,7 +39,7 @@ void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_a
 				password += char(rand() % 93 + 33);
 			}
 		}
-		data_file << Encrypter::encrypt_string(password) << endl;
+		data_file << PasswordSecurity::encrypt_string(password) << endl;
 	}
 
 	data_file.close();

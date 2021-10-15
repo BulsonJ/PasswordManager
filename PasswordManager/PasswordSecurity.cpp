@@ -1,10 +1,10 @@
-#include "Encrypter.h"
+#include "PasswordSecurity.h"
 
-int Encrypter::collatz(int input) {
+int PasswordSecurity::collatz(int input) {
 	return collatz(input, 0);
 }
 
-int Encrypter::collatz(int input, int count) {
+int PasswordSecurity::collatz(int input, int count) {
 	if (input == 1) {
 		return count;
 	}
@@ -14,7 +14,7 @@ int Encrypter::collatz(int input, int count) {
 	}
 }
 
-string Encrypter::encrypt_string(string input) {
+string PasswordSecurity::encrypt_string(const string input) {
 	string encrypted = "";
 	int previousNumber = 0;
 
@@ -26,4 +26,8 @@ string Encrypter::encrypt_string(string input) {
 	}
 
 	return encrypted;
+}
+
+string PasswordSecurity::decrypt_string(const string s) {
+
 }
