@@ -59,52 +59,57 @@ string PasswordSecurity::decrypt_password(const string s) {
 	return decrypted_password;
 }
 
-vector<int>* PasswordSecurity::decrypt_password_r(string password) {
+vector<vector<int>>* PasswordSecurity::decrypt_password_r(string password) {
 
-	vector<int>* ascii_values = new vector<int>;
-	decrypt_password_recursive(password, 0, ascii_values);
-	return ascii_values;
+	vector<vector<int>>* words = new vector<vector<int>>;
+	vector<int> ascii_values;
+	decrypt_password_recursive(password, 0, words, ascii_values);
+	return words;
 }
 
-void PasswordSecurity::decrypt_password_recursive(string password,int offset, vector<int>* ascii_values) {
+void PasswordSecurity::decrypt_password_recursive(string password,int offset, vector<vector<int>>* possible_words, vector<int>& ascii_values) {
 	/*
-		20953985
+		209539
 
-		if 2 is ascii, decrypt 0953985 with offset of 2 - true
-		if 0 is ascii, decrypt 953985 with offset of 0 - false
+		decrypt 2 with offset of 0 - true {4}
+			decrypt 0 with offset of 2 - false
 
-		if 20 is ascii, decrypt 953985 with offset of 20 - true
-		if 9 is ascii, 53985 with offset of 0 - false
+		decrypt 20 with offset of 0 - true {18}
+			decrypt 9 with offset of 20 - true {18, 60}
+				decypt 5 with offset of 9 - true {18, 60, 23}
+					decrypt 3 with offset of 5 -
+						decrypt 9 with offset of 3 -
+				decrypt 53 with offset of 9 -
+					decrypt 39 with offset of 5 - 
+
+			decrypt 95 with offset of 20 - true = {18, 117}
+				decryp 3 with offset of 95 - false
+				
+			decrypt 953 with offset of 20 - true
 	*/
-
 	if (password.size() == 0) {
+		possible_words->emplace_back(ascii_values);
 		return;
 	}
 
-	bool collatzFound = false;
 	string current_numbers;
+	int count = 0;
+	while (current_numbers.size() < 3 && !(current_numbers == password)) {
+		current_numbers += password[count];
+		if (std::stoi(current_numbers) == 0) return;
 
-	for (int i = 0; i < password.size(); i++) {
-		current_numbers += password[i];
+		vector<int> ascii_values_matching = get_ascii_from_collatz(std::stoi(current_numbers), offset);
+		if (!(ascii_values_matching.size() == 0)) {
 
-		int current_number = std::stoi(current_numbers);
-		vector<int> possible_values = get_ascii_from_collatz(std::stoi(current_numbers), offset);
-		if (possible_values.size() > 0) {
-			int ascii_value = possible_values[0];
-			(*ascii_values).push_back(ascii_value);
-			string rest_of_password = password.substr(i + 1, password.size() - 1);
-			collatzFound = true;
-
-			decrypt_password_recursive(rest_of_password, current_number, ascii_values);
+				ascii_values.emplace_back(ascii_values_matching[0]);
+				decrypt_password_recursive(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_words, ascii_values);
+				ascii_values.pop_back();
 		}
-	}
 
-	// if combination is false, delete it
-	if (!collatzFound) {
-		(*ascii_values).clear();
-	}
 
-	
+
+		count++;
+	}	
 }
 
 void PasswordSecurity::print_ascii_collatz_values(int offset) {

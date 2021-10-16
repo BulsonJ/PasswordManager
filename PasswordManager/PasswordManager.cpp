@@ -75,11 +75,13 @@ void option_generate_password() {
 }
 
 void option_decrypt_password() {
+	int x;
+	cin >> x;
+	PasswordSecurity::print_ascii_collatz_values(x);
 
-	//PasswordSecurity::decrypt_password("202015463615");
-	vector<int>* password;
+	vector<vector<int>>* password;
 	password = PasswordSecurity::decrypt_password_r("20953985");
-	int y;
+
 }
 
 int main(){
