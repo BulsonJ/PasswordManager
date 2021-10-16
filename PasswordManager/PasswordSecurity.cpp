@@ -1,6 +1,7 @@
 #include "PasswordSecurity.h"
 #include <iostream>
 #include <vector>
+#include "Timer.h"
 
 int PasswordSecurity::collatz(int input) {
 	return collatz(input, 0);
@@ -59,21 +60,25 @@ string PasswordSecurity::decrypt_password(const string s) {
 	return decrypted_password;
 }
 
-vector<vector<int>>* PasswordSecurity::decrypt_password_r(string password) {
-	vector<vector<int>>* words = new vector<vector<int>>;
+vector<vector<int>> PasswordSecurity::decrypt_password_r(string password) {
+	vector<vector<int>> words;
 	vector<int> ascii_values;
+	Timer test;
+	test.start();
 	decrypt_password_recursive(password, 0, words, ascii_values);
+	test.stop();
+	cout << test.elapsedTime() / 1000.0;
 	return words;
 }
 
-void PasswordSecurity::decrypt_password_recursive(string password, int offset, vector<vector<int>>* possible_words, vector<int>& ascii_values) {
+void PasswordSecurity::decrypt_password_recursive(string password, int offset, vector<vector<int>>& possible_words, vector<int>& ascii_values) {
 	
-	if (possible_words->size() > 0) {
+	if (possible_words.size() > 0) {
 		return;
 	}
 
 	if (password.size() == 0) {
-		possible_words->emplace_back(ascii_values);
+		possible_words.emplace_back(ascii_values);
 		return;
 	}
 
@@ -83,9 +88,13 @@ void PasswordSecurity::decrypt_password_recursive(string password, int offset, v
 		current_numbers += password[count];
 		if (std::stoi(current_numbers) == 0) return;
 
-		vector<int> ascii_values_matching = get_ascii_from_collatz(std::stoi(current_numbers), offset);
-		if (!(ascii_values_matching.size() == 0)) {
-			ascii_values.emplace_back(ascii_values_matching[0]);
+		//vector<int> ascii_values_matching = get_ascii_list_from_collatz(std::stoi(current_numbers), offset);
+		//if (!(ascii_values_matching.size() == 0)) {
+		int ascii_value = get_ascii_from_collatz(std::stoi(current_numbers), offset);
+		if(ascii_value != -1){
+
+			//ascii_values.emplace_back(ascii_values_matching[0]);
+			ascii_values.emplace_back(ascii_value);
 			decrypt_password_recursive(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_words, ascii_values);
 			ascii_values.pop_back();
 		}
@@ -107,14 +116,21 @@ vector<pair<int, int>> PasswordSecurity::get_ascii_collatz_values(int offset) {
 	return values;
 }
 
-vector<int> PasswordSecurity::get_ascii_from_collatz(int collatz, int offset) {
-	vector<pair<int, int>> collatz_values = get_ascii_collatz_values(offset);
-	vector<int> possible_values;
-	// For each value in the collatz, if matches current numbers then return ascii value
-	for (auto it = collatz_values.begin(); it != collatz_values.end(); it++) {
-		if (collatz == it->second) {
-			possible_values.push_back(it->first);
+int PasswordSecurity::get_ascii_from_collatz(int collatz, int offset) {
+	for (int i = 1; i < 256; i++) {
+		if (i == PasswordSecurity::collatz(i + offset)) {
+			return i;
 		}
 	}
-	return possible_values;
+	return -1;
+}
+
+vector<int> PasswordSecurity::get_ascii_list_from_collatz(int collatz, int offset) {
+	vector<int> ascii_values;
+	for (int i = 1; i < 256; i++) {
+		if (i == PasswordSecurity::collatz(i + offset)) {
+			ascii_values.emplace_back(i);
+		}
+	}
+	return ascii_values;
 }
