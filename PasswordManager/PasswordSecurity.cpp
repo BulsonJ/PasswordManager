@@ -1,6 +1,8 @@
 #include "PasswordSecurity.h"
 #include <iostream>
+#include <fstream>
 #include <vector>
+#include <algorithm>
 #include "Timer.h"
 
 int PasswordSecurity::collatz(int input) {
@@ -41,46 +43,85 @@ vector<vector<int>> PasswordSecurity::decrypt_password_first_result(string passw
 	return words;
 }
 
-vector<vector<vector<int>>> PasswordSecurity::decrypt_string(string password) {
+template <typename T>
+void combinations(vector<vector<T>>& vector_of_vectors, vector<T>& current_combo, vector<vector<T>>& all_combinations) {
+	if (vector_of_vectors.size() == 0) {
+		all_combinations.emplace_back(current_combo);
+		return;
+	}
+
+	vector<vector<T>> rest_of_vectors(vector_of_vectors.begin() + 1, vector_of_vectors.end());
+	vector<T> current_char = vector_of_vectors[0];
+	for (auto it = current_char.begin(); it < current_char.end(); it++) {
+		current_combo.emplace_back(*it);
+		combinations<T>(rest_of_vectors, current_combo, all_combinations);
+		current_combo.pop_back();
+	}
+
+}
+
+vector<vector<vector<string>>> PasswordSecurity::decrypt_string(string password) {
 	vector<vector<vector<int>>> possible_strings;
 	vector<vector<int>> ascii_values;
 	decrypt_password_recursive_string(password, 0, possible_strings, ascii_values);
 
-	// go through possible words here
+	// load in dictionary
 
-	// for each possible string
-	vector<string> strings;
+	ifstream english_dictionary;
+	english_dictionary.open("words.txt");
+
+	string myText;
+	vector<string> english_words;
+	while(getline(english_dictionary, myText)) {
+		english_words.emplace_back(myText);
+	}
+	vector<vector<vector<string>>> strings;
 	for (auto it = possible_strings.begin(); it < possible_strings.end(); it++) {
-		if (it - possible_strings.begin() == 0) continue;
-		string current_string;
-		vector<int> last_word_pos;
 
-		// for each possible character space
+		int last_word_pos = 0;
+		vector<vector<string>> final_sentence;
+
 		for (auto string_it = (*it).begin(); string_it < (*it).end(); string_it++) {
-			if ((*string_it).size() == 1) {
-				current_string += (*string_it)[0];
-				if ((*string_it)[0] == 32) {
-					last_word_pos.emplace_back(string_it - (*it).begin());
+			if (((*string_it)[0] == 32 && (*string_it).size() > 0) || string_it + 1 == (*it).end()) {
+
+				auto word_begin = (*it).begin() + last_word_pos;
+				auto word_end = (*it).begin() + (string_it - (*it).begin());
+				if (string_it + 1 == (*it).end()) {
+					word_end = (*it).end();
 				}
-			}
-			else {
-				current_string += "?";
-			}
-			// for each possible character in that space
-			for (auto char_it = (*string_it).begin(); char_it < (*string_it).end(); char_it++) {
 
-			}
+				vector<vector<int>> word(word_begin, word_end);
+				last_word_pos = string_it - (*it).begin() + 1;
 
+				vector<int> current_word;
+				vector<vector<int>> final_words;
+				combinations<int>(word, current_word, final_words);
+
+				vector<string> possible_words;
+				for (auto word_it = final_words.begin(); word_it < final_words.end(); word_it++) {
+					string word;
+					for (auto char_it = (*word_it).begin(); char_it < (*word_it).end(); char_it++) {
+						word += (*char_it);
+					}
+					string lowercase_string = word;
+					std::transform(lowercase_string.begin(), lowercase_string.end(), lowercase_string.begin(), ::tolower);
+
+					if (std::find(english_words.begin(), english_words.end(), lowercase_string) != english_words.end()) {
+						possible_words.emplace_back(word);
+					}
+				}
+				final_sentence.emplace_back(possible_words);
+			}
 		}
-		strings.emplace_back(current_string);
+
+		vector<string> current_word;
+		vector<vector<string>> final_words;
+		combinations<string>(final_sentence, current_word, final_words);
+
+		strings.emplace_back(final_words);
 	}
 
-
-	// -------------------------------
-	for (auto it = strings.begin(); it < strings.end(); it++) {
-		cout << *it << endl;
-	}
-	return possible_strings;
+	return strings;
 }
 
 void PasswordSecurity::decrypt_password_recursive(string password, int offset, vector<vector<vector<int>>>& possible_words, vector<vector<int>>& current_word_possibility) {
@@ -192,7 +233,7 @@ vector<int> PasswordSecurity::get_ascii_list_from_collatz(int collatzNum, int of
 vector<int> PasswordSecurity::get_ascii_string_list_from_collatz(int collatzNum, int offset) {
 	vector<int> ascii_values;
 	for (int i = 32; i < 123; i++) {
-		if (i > 32 && i < 43){
+		if (i > 32 && i < 63){
 			continue;
 		}
 		if (collatzNum == collatz(i + offset)) {

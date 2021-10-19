@@ -75,9 +75,21 @@ void option_generate_password() {
 }
 
 void option_decrypt_password() {
-	vector<vector<vector<int>>> passwords;
-	passwords = PasswordSecurity::decrypt_password("20953985");
-	passwords = PasswordSecurity::decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101");
+	/*vector<vector<vector<int>>> passwords;
+	passwords = PasswordSecurity::decrypt_password("20953985");*/
+
+	vector<vector<vector<string>>> ten_marks;
+	ten_marks = PasswordSecurity::decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101");
+
+	for (auto it = ten_marks.begin(); it < ten_marks.end(); it++) {
+		for (auto pass_it = (*it).begin(); pass_it < (*it).end(); pass_it++) {
+			for (auto word_it = (*pass_it).begin(); word_it < (*pass_it).end(); word_it++) {
+				cout << *word_it << " ";
+			}
+			cout << endl;
+		}
+	}
+
 	//vector<vector<int>> password_single;
 	//password_single = PasswordSecurity::decrypt_password_first_result("11821281032641232323465415159511434116133311670932641854436103262815157202828281087044237100261520152020202015121342810813113114392341151081312201085236103522328281082628232828710013113398526116114522390391520282890");
 	return;
