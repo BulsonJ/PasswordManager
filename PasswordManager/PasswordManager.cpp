@@ -75,9 +75,11 @@ void option_generate_password() {
 }
 
 void option_decrypt_password() {
-	vector<vector<int>> password;
-	password = PasswordSecurity::decrypt_password_r("1279513461033941361595393615108262841159588119212810339239010613281595261032110821281032641152010826284111634287202815121132028239011921281085223411163415201081333413623282315108212873315108131081328281082190441112128");
-
+	vector<vector<vector<int>>> passwords;
+	passwords = PasswordSecurity::decrypt_password("20953985");
+	vector<vector<int>> password_single;
+	password_single = PasswordSecurity::decrypt_password_first_result("20953985");
+	return;
 }
 
 int main(){
