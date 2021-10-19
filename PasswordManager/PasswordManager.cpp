@@ -78,16 +78,11 @@ void option_decrypt_password() {
 	/*vector<vector<vector<int>>> passwords;
 	passwords = PasswordSecurity::decrypt_password("20953985");*/
 
-	vector<vector<vector<string>>> ten_marks;
+	vector<string> ten_marks;
 	ten_marks = PasswordSecurity::decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101");
 
 	for (auto it = ten_marks.begin(); it < ten_marks.end(); it++) {
-		for (auto pass_it = (*it).begin(); pass_it < (*it).end(); pass_it++) {
-			for (auto word_it = (*pass_it).begin(); word_it < (*pass_it).end(); word_it++) {
-				cout << *word_it << " ";
-			}
-			cout << endl;
-		}
+		cout << *it << endl;
 	}
 
 	//vector<vector<int>> password_single;

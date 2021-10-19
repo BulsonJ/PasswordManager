@@ -60,7 +60,7 @@ void combinations(vector<vector<T>>& vector_of_vectors, vector<T>& current_combo
 
 }
 
-vector<vector<vector<string>>> PasswordSecurity::decrypt_string(string password) {
+vector<string> PasswordSecurity::decrypt_string(string password) {
 	vector<vector<vector<int>>> possible_strings;
 	vector<vector<int>> ascii_values;
 	decrypt_password_recursive_string(password, 0, possible_strings, ascii_values);
@@ -121,7 +121,19 @@ vector<vector<vector<string>>> PasswordSecurity::decrypt_string(string password)
 		strings.emplace_back(final_words);
 	}
 
-	return strings;
+	vector<string> passwords;
+	for (auto it = strings.begin(); it < strings.end(); it++) {
+		for (auto pass_it = (*it).begin(); pass_it < (*it).end(); pass_it++) {
+			string password;
+			for (auto word_it = (*pass_it).begin(); word_it < (*pass_it).end(); word_it++) {
+				password += *word_it;
+				password += " ";
+			}
+			passwords.emplace_back(password);
+		}
+	}
+
+	return passwords;
 }
 
 void PasswordSecurity::decrypt_password_recursive(string password, int offset, vector<vector<vector<int>>>& possible_words, vector<vector<int>>& current_word_possibility) {

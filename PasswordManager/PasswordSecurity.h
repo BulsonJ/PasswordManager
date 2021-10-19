@@ -9,7 +9,7 @@ public:
 
 	static vector<vector<vector<int>>> decrypt_password(string password);
 	static vector<vector<int>> decrypt_password_first_result(string password);
-	static vector<vector<vector<string>>> decrypt_string(string password);
+	static vector<string> decrypt_string(string password);
 	static void decrypt_password_recursive(string rest_of_password,int offset, vector<vector<vector<int>>>& possible_words, vector<vector<int>>& current_word_possibility);
 	static void decrypt_password_recursive_single(string rest_of_password, int offset, vector<vector<int>>& possible_words, vector<int>& current_word_possibility);
 	static void decrypt_password_recursive_string(string rest_of_password, int offset, vector<vector<vector<int>>>& possible_words, vector<vector<int>>& current_word_possibility);
