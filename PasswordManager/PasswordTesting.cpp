@@ -1,15 +1,10 @@
 #include "PasswordTesting.h"
 #include "PasswordSecurity.h"
+#include "PasswordStorage.h"
 #include <fstream>
 
 void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_argument){
-	// refactor to use password storage class
-	ofstream data_file;
-
-	data_file.open(file_name.c_str(), ios::trunc);
-
-	if (data_file.fail())
-		throw invalid_argument("no file exists " + file_name);
+	PasswordStorage store(file_name);
 
 	const int random_letter_amount = 10;
 	char random_letters[random_letter_amount];
@@ -26,7 +21,7 @@ void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_a
 			password += random_letters[rand() % 10];
 		}
 
-		data_file << PasswordSecurity::encrypt_string(password) << endl;
+		store.save_to_file(PasswordSecurity::encrypt_string(password));
 	}
 	
 	length = 0;
@@ -40,8 +35,6 @@ void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_a
 				password += char(rand() % 93 + 33);
 			}
 		}
-		data_file << PasswordSecurity::encrypt_string(password) << endl;
+		store.save_to_file(PasswordSecurity::encrypt_string(password));
 	}
-
-	data_file.close();
 }

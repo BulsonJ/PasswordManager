@@ -7,7 +7,7 @@ using namespace std;
 class FileStorage
 {
 public:
-	FileStorage(string file_name) { this->file_name = file_name; };
+	FileStorage(const string file_name) { this->file_name = file_name; };
 	~FileStorage() {};
 protected:
 	string file_name;
