@@ -53,7 +53,7 @@ void PasswordTesting::TestPasswords(const string file_name) {
 	float average = 0.0;
 	int successAmount = 0;
 	bool success = false;
-	for (int i = 0; i < 20000; ++i) {
+	for (int i = 10000; i < 20000; ++i) {
 		//cout << *passwords[i] << endl;
 		test.start();
 		vector<int> password = PasswordSecurity::decrypt_password_first_result(*passwords[i]);
@@ -63,6 +63,9 @@ void PasswordTesting::TestPasswords(const string file_name) {
 		if (*passwords[i] == crackedPassword) {
 			average += test.elapsedTime();
 			successAmount += 1;
+		}
+		else {
+			continue;
 		}
 		
 		if ((i + 1) % 100 == 0) {

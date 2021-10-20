@@ -188,7 +188,7 @@ void PasswordSecurity::decrypt_password_recursive_single(string password, int of
 	int count = 0;
 	while (current_numbers.size() < 3 && !(current_numbers == password)) {
 		current_numbers += password[count];
-		if (std::stoi(current_numbers) == 0) return;
+		if (std::stoi(current_numbers) == 0 && current_password_possibility.size() > 0) return;
 
 		int ascii_value = get_ascii_from_collatz(std::stoi(current_numbers), offset);
 		if (ascii_value != -1){
