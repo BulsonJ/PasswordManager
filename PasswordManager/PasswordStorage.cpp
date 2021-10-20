@@ -1,21 +1,40 @@
 #include "PasswordStorage.h"
 
 PasswordStorage::PasswordStorage(const string file_name) : FileStorage(file_name) {
-	data_file.open(file_name.c_str(), ios::in | ios::out | ios::app);
-
-	if (data_file.fail())
-		throw invalid_argument("no file exists " + file_name);
+	
 }
 
 PasswordStorage::~PasswordStorage() {
-	data_file.close();
+	
 }
 
 void PasswordStorage::save_to_file(const string password) throw (invalid_argument) {
+	data_file.open(file_name.c_str(), ios::out | ios::trunc);
+
+	if (data_file.fail())
+		throw invalid_argument("no file exists " + file_name);
+
 	data_file << password << endl;
+
+	data_file.close();
 }
 
+void PasswordStorage::save_passwords_to_file(const string* passwords) throw (invalid_argument) {
+	data_file.open(file_name.c_str(), ios::out | ios::trunc);
+
+	if (data_file.fail())
+		throw invalid_argument("no file exists " + file_name);
+
+	for (int i = 0; i < 20000; ++i) {
+		data_file << passwords[i] << endl;
+	}
+	
+	data_file.close();
+}
+
+
 string** PasswordStorage::read_from_file() {
+	data_file.open(file_name.c_str(), ios::in | ios::app);
 	string password;
 
 	string** passwords = new string * [20000];
@@ -25,5 +44,6 @@ string** PasswordStorage::read_from_file() {
 		count++;
 	}
 
+	data_file.close();
 	return passwords;
 }

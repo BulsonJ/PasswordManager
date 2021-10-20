@@ -28,6 +28,20 @@ string PasswordSecurity::encrypt_string(const string input) {
 	return encrypted;
 }
 
+string PasswordSecurity::encrypt_vector_int(const vector<int> input) {
+	string encrypted = "";
+	int previousNumber = 0;
+
+	for (auto it = input.begin(); it < input.end(); ++it) {
+		int number_of_turns = 0;
+		number_of_turns = collatz(*it + previousNumber);
+		encrypted += to_string(number_of_turns);
+		previousNumber = number_of_turns;
+	}
+
+	return encrypted;
+}
+
 vector<vector<vector<int>>> PasswordSecurity::decrypt_password(string password) {
 	vector<vector<vector<int>>> words;
 	vector<vector<int>> ascii_values;
@@ -36,8 +50,8 @@ vector<vector<vector<int>>> PasswordSecurity::decrypt_password(string password) 
 }
 
 
-vector<vector<int>> PasswordSecurity::decrypt_password_first_result(string password) {
-	vector<vector<int>> words;
+vector<int> PasswordSecurity::decrypt_password_first_result(string password) {
+	vector<int> words;
 	vector<int> ascii_values;
 	decrypt_password_recursive_single(password, 0, words, ascii_values);
 	return words;
@@ -159,14 +173,14 @@ void PasswordSecurity::decrypt_password_recursive(string password, int offset, v
 	}
 }
 
-void PasswordSecurity::decrypt_password_recursive_single(string password, int offset, vector<vector<int>>& possible_words, vector<int>& current_word_possibility) {
+void PasswordSecurity::decrypt_password_recursive_single(string password, int offset, vector<int>& possible_password, vector<int>& current_password_possibility) {
 	
-	if (possible_words.size() > 0) {
+	if (possible_password.size() > 0) {
 		return;
 	}
 
 	if (password.size() == 0) {
-		possible_words.emplace_back(current_word_possibility);
+		possible_password = current_password_possibility;
 		return;
 	}
 
@@ -178,9 +192,9 @@ void PasswordSecurity::decrypt_password_recursive_single(string password, int of
 
 		int ascii_value = get_ascii_from_collatz(std::stoi(current_numbers), offset);
 		if (ascii_value != -1){
-			current_word_possibility.emplace_back(ascii_value);
-			decrypt_password_recursive_single(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_words, current_word_possibility);
-			current_word_possibility.pop_back();
+			current_password_possibility.emplace_back(ascii_value);
+			decrypt_password_recursive_single(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_password, current_password_possibility);
+			current_password_possibility.pop_back();
 		}
 		count++;
 	}	

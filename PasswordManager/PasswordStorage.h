@@ -11,6 +11,7 @@ public:
 	PasswordStorage(const string file_name);
 	~PasswordStorage();
 	virtual void save_to_file(const string password) throw (invalid_argument);
+	void save_passwords_to_file(const string* password) throw (invalid_argument);
 	string** read_from_file();
 protected:
 	fstream data_file;

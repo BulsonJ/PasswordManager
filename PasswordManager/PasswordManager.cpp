@@ -78,12 +78,12 @@ void option_decrypt_password() {
 	/*vector<vector<vector<int>>> passwords;
 	passwords = PasswordSecurity::decrypt_password("20953985");*/
 
-	/*vector<string> ten_marks;
+	vector<string> ten_marks;
 	ten_marks = PasswordSecurity::decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101");
 
 	for (auto it = ten_marks.begin(); it < ten_marks.end(); it++) {
 		cout << *it << endl;
-	}*/
+	}
 
 	/*vector<vector<int>> password_single;
 	Timer test;
@@ -92,7 +92,11 @@ void option_decrypt_password() {
 	test.stop();
 	cout << test.elapsedTime() << "ms";*/
 
-	PasswordTesting::TestPasswords("passwordtest.txt");
+	//PasswordTesting::TestPasswords("passwordtest.txt");
+	/*vector<int> passwords;
+	passwords = PasswordSecurity::decrypt_password_first_result("11834231515108701828234115");
+	string crackedPassword = PasswordSecurity::encrypt_vector_int(passwords);*/
+
 	return;
 }
 

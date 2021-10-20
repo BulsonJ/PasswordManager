@@ -60,6 +60,5 @@ void AccountStorage::save_to_file(const string username, const string password) 
 	data_file << username << " " << password << endl;
 	accounts.emplace(username, password);
 
-
 	data_file.close();
 }
