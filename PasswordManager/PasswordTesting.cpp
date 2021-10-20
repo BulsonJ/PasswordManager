@@ -38,3 +38,15 @@ void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_a
 		store.save_to_file(PasswordSecurity::encrypt_string(password));
 	}
 }
+
+void PasswordTesting::TestPasswords(const string file_name) {
+	PasswordStorage store(file_name);
+
+	string** passwords = store.read_from_file();
+
+	for (int i = 0; i < 1000; ++i) {
+		cout << *passwords[i] << endl;
+		//vector<vector<int>> password = PasswordSecurity::decrypt_password_first_result(*passwords[i]);
+	}
+
+}

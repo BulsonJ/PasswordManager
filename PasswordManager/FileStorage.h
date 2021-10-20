@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <fstream>
+#include <iostream>
+#include <ostream>
 #include <exception>
 using namespace std;
 

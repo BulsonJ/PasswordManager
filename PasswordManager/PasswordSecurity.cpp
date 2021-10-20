@@ -215,14 +215,6 @@ void PasswordSecurity::print_ascii_collatz_values(int offset) {
 	}
 }
 
-vector<pair<int, int>> PasswordSecurity::get_ascii_collatz_values(int offset) {
-	vector<pair<int, int>> values;
-	for (int i = 1; i < 256; i++) {
-		values.emplace_back(make_pair(i, collatz(i + offset)));
-	}
-	return values;
-}
-
 int PasswordSecurity::get_ascii_from_collatz(int collatzNum, int offset) {
 	for (int i = 1; i < 256; i++) {
 		if (collatzNum == PasswordSecurity::collatz(i + offset)) {

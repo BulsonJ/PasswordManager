@@ -17,7 +17,6 @@ public:
 	//static void combinations(vector<vector<int>> word, vector<int> current_word, vector<vector<int>>& final_words);
 
 	static void print_ascii_collatz_values(int offset);
-	static vector<pair<int, int>> get_ascii_collatz_values(int offset);
 	static int get_ascii_from_collatz(int collatz, int offset);
 	static vector<int> get_ascii_list_from_collatz(int collatz, int offset);
 	static vector<int> get_ascii_string_list_from_collatz(int collatz, int offset);
