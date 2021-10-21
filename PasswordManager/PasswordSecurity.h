@@ -1,3 +1,6 @@
+#ifndef PASSWORDSECURITY_H
+#define PASSWORDSECURITY_H
+
 #include <string>
 #include <vector>
 using namespace std;
@@ -22,7 +25,8 @@ protected:
 
 	static int get_ascii_from_collatz(int collatz, int offset);
 	static vector<int> get_ascii_list_from_collatz(int collatz, int offset);
-
 	static vector<int> get_ascii_string_list_from_collatz(int collatz, int offset);
 };
+
+#endif
 

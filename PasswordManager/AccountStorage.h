@@ -1,7 +1,8 @@
+#ifndef ACCOUNTSTORAGE_H
+#define ACCOUNTSTORAGE_H
+
 #pragma once
-#include <string>
 #include <map>
-#include <exception>
 #include "FileStorage.h"
 using namespace std;
 
@@ -17,4 +18,6 @@ public:
 protected:
 	map<string, string> accounts;
 };
+
+#endif
 

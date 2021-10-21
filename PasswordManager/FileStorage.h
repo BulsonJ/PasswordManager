@@ -1,7 +1,9 @@
+#ifndef FILESTORAGE_H
+#define FILESTORAGE_H
+
 #pragma once
 #include <string>
 #include <fstream>
-#include <iostream>
 #include <ostream>
 #include <exception>
 using namespace std;
@@ -15,4 +17,6 @@ protected:
 	string file_name;
 	virtual void save_to_file(const string s) = 0;
 };
+
+#endif
 

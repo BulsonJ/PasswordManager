@@ -3,6 +3,7 @@
 #include "PasswordStorage.h"
 #include "Timer.h"
 #include <fstream>
+#include <iostream>
 
 void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_argument){
 	PasswordStorage store(file_name);
@@ -69,7 +70,14 @@ void PasswordTesting::TestPasswords(const string file_name) {
 		}
 		
 		if ((i + 1) % 100 == 0) {
-			cout << i + 1 - 100 << "to" << i + 1 <<" ,set complete, percent cracked(" << successAmount << "/100), avg time: " << average/100 << "ms" << endl;
+			cout << i + 1 - 100 << "to" << i + 1 << " cracked" << endl;
+		}
+		
+		if ((i + 1) % 10000 == 0) {
+			cout << "-----------------------------------------------------------" << endl;
+			cout << i + 1 - 10000 << "to" << i + 1 << " percent cracked(" << successAmount / 100 << "%), avg time: " << average / 10000 << "ms" << endl;
+			cout << "-----------------------------------------------------------" << endl;
+			cout << endl;
 			successAmount = 0;
 			average = 0;
 		}

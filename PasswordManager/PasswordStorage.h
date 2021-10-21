@@ -1,7 +1,9 @@
+#ifndef PASSWORDSTORAGE_H
+#define PASSWORDSTORAGE_H
+
 #pragma once
 #include "FileStorage.h"
 #include <vector>
-#include <string>
 using namespace std;
 
 class PasswordStorage :
@@ -17,3 +19,4 @@ protected:
 	fstream data_file;
 };
 
+#endif

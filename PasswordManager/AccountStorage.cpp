@@ -1,4 +1,3 @@
-#include <locale>
 #include "AccountStorage.h"
 
 AccountStorage::AccountStorage(string file_name) throw (invalid_argument) : FileStorage(file_name) {

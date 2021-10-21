@@ -1,5 +1,9 @@
 #pragma once
 #include <chrono>
+
+#ifndef TIMER_H
+#define TIMER_H
+
 class Timer
 {
 public:
@@ -13,4 +17,6 @@ protected:
 	std::chrono::time_point<std::chrono::system_clock> end_time;
 	bool running = false;
 };
+
+#endif
 
