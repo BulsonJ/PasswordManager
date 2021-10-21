@@ -69,18 +69,18 @@ void combinations(vector<vector<T>>& vector_of_vectors, vector<T>& current_combo
 		combinations<T>(rest_of_vectors, current_combo, all_combinations);
 		current_combo.pop_back();
 	}
-
 }
 
-vector<string> PasswordSecurity::decrypt_string(string password) {
+vector<string> PasswordSecurity::decrypt_string(string password, const string file_name) throw (invalid_argument) {
 	vector<vector<vector<int>>> possible_strings;
 	vector<vector<int>> ascii_values;
 	decrypt_password_recursive_string(password, 0, possible_strings, ascii_values);
 
-	// load in dictionary
-
 	ifstream english_dictionary;
-	english_dictionary.open("words.txt");
+	english_dictionary.open(file_name.c_str());
+
+	if (english_dictionary.fail()) 
+		throw invalid_argument("no dictionary file available" + file_name);
 
 	string myText;
 	vector<string> english_words;
@@ -149,14 +149,6 @@ vector<string> PasswordSecurity::decrypt_string(string password) {
 	}
 
 	return passwords;
-}
-
-void PasswordSecurity::decrypt_password_recursive(string password, int offset) {
-	vector<vector<vector<int>>> words;
-	vector<vector<int>> ascii_values;
-	decrypt_password_recursive(password, 0, words, ascii_values);
-	//return words;
-	return;
 }
 
 void PasswordSecurity::decrypt_password_recursive(string password, int offset, vector<vector<vector<int>>>& possible_passwords, vector<vector<int>>& current_password_possibility) {

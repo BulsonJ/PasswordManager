@@ -91,7 +91,7 @@ void option_decrypt_password() {
 		break;
 	case(2):
 		vector<string> ten_marks;
-		ten_marks = PasswordSecurity::decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101");
+		ten_marks = PasswordSecurity::decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101", "words.txt");
 
 		for (auto it = ten_marks.begin(); it < ten_marks.end(); it++) {
 			cout << *it << endl;
