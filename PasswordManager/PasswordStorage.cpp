@@ -33,8 +33,12 @@ void PasswordStorage::save_passwords_to_file(const string* passwords) throw (inv
 }
 
 
-string** PasswordStorage::read_from_file() {
+string** PasswordStorage::read_from_file() throw (invalid_argument){
 	data_file.open(file_name.c_str(), ios::in | ios::app);
+
+	if (data_file.fail())
+		throw invalid_argument("no file exists " + file_name);
+
 	string password;
 
 	string** passwords = new string * [20000];

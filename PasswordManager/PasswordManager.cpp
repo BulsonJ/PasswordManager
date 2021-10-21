@@ -6,7 +6,7 @@
 #include "Timer.h"
 using namespace std;
 
-AccountStorage storage("password.txt");
+AccountStorage* storage = nullptr;
 
 int menu_input() {
 	cout << "Select an option:" << endl;
@@ -17,34 +17,53 @@ int menu_input() {
 	cout << "5. Decrypt sentence" << endl;
 	cout << "6. Exit" << endl;
 
-	int selected_option;
-	cin >> selected_option;
-	return selected_option;
+	string selected_option;
+	getline(cin, selected_option);
+	return stoi(selected_option);
+}
+
+bool check_username(const string username) {
+	if (username.size() == 0)
+		return false;
+	if (username.find(' ') != std::string::npos)
+		return false;
+
+	return true;
+}
+
+inline string get_username() {
+	string username;
+	cout << "Please enter a username" << endl;
+	getline(cin, username);
+	bool valid_username = check_username(username);
+
+	while (!valid_username) {
+		cout << "Please enter a valid username" << endl;
+		getline(cin, username);
+		valid_username = check_username(username);
+	}
+	return username;
+}
+
+inline string get_password() {
+	string password;
+	cout << "Please enter a password" << endl;
+	getline(cin, password);
+
+	while (password.size() == 0) {
+		cout << "Please enter a valid password" << endl;
+		getline(cin, password);
+	}
+	return password;
 }
 
 void option_create_password() {
-	string username;
-	string password;
-	cout << "Please enter a username" << endl;
-	cin >> username;
-
-	while (username == ""){
-		cout << "Please enter a valid username" << endl;
-		cin >> username;
-	}
-
-	cout << "Please enter a password" << endl;
-	cin >> password;
-
-	while (password == "") {
-		cout << "Please enter a valid password" << endl;
-		cin >> password;
-	}
-
-
+	string username = get_username();
+	string password = get_password();
 
 	try {
-		storage.save_to_file(username, PasswordSecurity::encrypt_string(password));
+		storage->save_to_file(username, PasswordSecurity::encrypt_string(password));
+		cout << "Account created successfully!" << endl;
 	}
 	catch (const std::invalid_argument& e) {
 		cout << e.what() << endl;
@@ -56,23 +75,21 @@ void option_check_password() {
 	bool foundPassword = false;
 	string username;
 	string password;
-	cout << "Please enter a username:" << endl;
-	cin >> username;
+	
+	username = get_username();
 
 	while (triesRemaining > 0 && !foundPassword) {
-		cout << "Please enter a password(" << triesRemaining << " tries remaining):" << endl;
-		cin >> password;
+		password = get_password();
 		triesRemaining--;
 
-		if (PasswordSecurity::encrypt_string(password) == storage.get_password(username)) {
+		if (PasswordSecurity::encrypt_string(password) == storage->get_password(username)) {
 			cout << "Success!" << endl;
 			foundPassword = true;
 		}
 		else {
-			cout << "Failure!" << endl;
+			cout << "Failure! ("<< triesRemaining << " tries remaining)" << endl;
 		}
 	}
-
 }
 
 void option_generate_password() {
@@ -85,7 +102,7 @@ void option_generate_password() {
 	catch (const std::invalid_argument& e) {
 		cout << e.what() << endl;
 	}
-	cout << "Passwords saved to passwordtest.txt(" << test.elapsedTime() / 1000.0 << " s taken)" << endl;
+	cout << "Passwords saved to passwordtest.txt(" << test.elapsedTime().count() / 1000.0 << " s taken)" << endl;
 }
 
 void option_decrypt_password() {
@@ -94,12 +111,17 @@ void option_decrypt_password() {
 }
 
 void option_decrypt_sentence() {
-	vector<string> ten_marks;
+	vector<string> sentence;
 	PasswordSecurity test;
 	test.generate_collatz_multiple_sentence_ascii_values();
-	ten_marks = test.decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101", "words.txt");
+	try {
+		sentence = test.decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101", "words.txt");
+	}
+	catch (const std::invalid_argument& e) {
+		cout << e.what() << endl;
+	}
 
-	for (auto it = ten_marks.begin(); it < ten_marks.end(); it++) {
+	for (auto it = sentence.begin(); it < sentence.end(); it++) {
 		std::cout << *it << endl;
 	}
 	return;
@@ -107,6 +129,8 @@ void option_decrypt_sentence() {
 
 int main(){
 	bool exit = false;
+
+	storage = new AccountStorage("password.txt");
 
 	void (*menu_option)();
 	menu_option = nullptr;

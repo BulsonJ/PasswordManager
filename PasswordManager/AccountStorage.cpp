@@ -1,8 +1,8 @@
 #include "AccountStorage.h"
 
 AccountStorage::AccountStorage(string file_name) throw (invalid_argument) : FileStorage(file_name) {
-	ifstream passwordFile;
-	passwordFile.open(file_name.c_str());
+	fstream passwordFile;
+	passwordFile.open(file_name.c_str(), ios::in | ios::app);
 
 	if (passwordFile.fail())
 		throw invalid_argument("no file exists " + file_name);
@@ -27,7 +27,9 @@ bool AccountStorage::check_duplicate_username(const string name) const {
 
 string AccountStorage::get_password(const string username) const {
 	auto it = accounts.find(username);
-	return it->second;
+	if (it != accounts.end())
+		return it->second;
+	return "";
 }
 
 void AccountStorage::save_to_file(const string s) {

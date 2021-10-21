@@ -10,11 +10,10 @@ public:
 	~Timer() {};
 	void start();
 	void stop();
-	double elapsedTime();
+	std::chrono::duration<double, std::milli> elapsedTime() { return std::chrono::duration<double, std::milli>(end_time - start_time); };
 protected:
-	std::chrono::time_point<std::chrono::system_clock> start_time;
-	std::chrono::time_point<std::chrono::system_clock> end_time;
-	bool running = false;
+	std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
+	std::chrono::time_point<std::chrono::high_resolution_clock> end_time;
 };
 
 #endif

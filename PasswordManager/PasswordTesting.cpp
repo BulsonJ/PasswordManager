@@ -49,16 +49,28 @@ void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_a
 void PasswordTesting::TestPasswords(const string file_name) {
 	PasswordStorage store(file_name);
 
-	string** passwords = store.read_from_file();
-
-	PasswordSecurity cracker;
-	cracker.generate_collatz_ascii_values();
-	cracker.generate_collatz_multiple_ascii_values();
+	string** passwords = nullptr;
+	try {
+		passwords = store.read_from_file();
+	}
+	catch (const std::invalid_argument& e) {
+		cout << e.what() << endl;
+	}
 
 	Timer test;
-	float average = 0.0;
-	int successAmount = 0;
+	PasswordSecurity cracker;
+	test.start();
+	cracker.generate_collatz_ascii_values();
+	test.stop();
+	cout << "Generated possible collatz values, took" << test.elapsedTime().count() << "ms." << endl;
+
+
+	int success_amounts[200] = {0};
+	double average_amounts[200] = {0.0};
+	int set_counter = 0;
+
 	bool success = false;
+	cout << "-----------------------------------------------------------" << endl;
 	for (int i = 0; i < 20000; ++i) {
 		test.start();
 		vector<int> password = cracker.decrypt_password_first_result(*passwords[i]);
@@ -66,24 +78,40 @@ void PasswordTesting::TestPasswords(const string file_name) {
 
 		string crackedPassword = PasswordSecurity::encrypt_vector_int(password);
 		if (*passwords[i] == crackedPassword) {
-			average += test.elapsedTime();
-			successAmount += 1;
+			average_amounts[set_counter] += test.elapsedTime().count();
+			success_amounts[set_counter] += 1;
 		}
 		else {
 			continue;
 		}
 		
 		if ((i + 1) % 100 == 0) {
-			cout << i + 1 - 100 << "to" << i + 1 << " cracked" << endl;
+			cout << i + 1 - 100 << "to" << i + 1 << " percent cracked(" << success_amounts[set_counter] << "%), avg time: " << average_amounts[set_counter] / 100 << "ms" << endl;
+			set_counter++;
 		}
 		
-		if ((i + 1) % 10000 == 0) {
+		if (i + 1 == 10000 || i + 1 == 20000) {
+			int success = 0;
+			double average = 0;
+			if (i + 1 == 10000) {
+				for (int j = 0; j < 100; j++) {
+					average += average_amounts[j];
+					success += success_amounts[j];
+				}
+			}
+			else {
+				for (int j = 100; j < 200; j++) {
+					average += average_amounts[j];
+					success += success_amounts[j];
+				}
+			}
+			average = average / 10000;
+			success = success / 100;
+
 			cout << "-----------------------------------------------------------" << endl;
-			cout << i + 1 - 10000 << "to" << i + 1 << " percent cracked(" << successAmount/100 << "%), avg time: " << average / 10000 << "ms" << endl;
+			cout << i + 1 - 10000 << "to" << i + 1 << " percent cracked(" << success << "%), avg time: " << average << "ms" << endl;
 			cout << "-----------------------------------------------------------" << endl;
 			cout << endl;
-			successAmount = 0;
-			average = 0;
 		}
 
 	}
