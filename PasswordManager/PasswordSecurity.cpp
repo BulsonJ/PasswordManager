@@ -2,7 +2,16 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <set>
 #include "Timer.h"
+
+PasswordSecurity::PasswordSecurity() {
+
+}
+
+PasswordSecurity::~PasswordSecurity() {
+
+}
 
 int PasswordSecurity::collatz(int input) {
 	return collatz(input, 0);
@@ -72,9 +81,9 @@ void combinations(vector<vector<T>>& vector_of_vectors, vector<T>& current_combo
 }
 
 vector<string> PasswordSecurity::decrypt_string(string password, const string file_name) throw (invalid_argument) {
-	vector<vector<vector<int>>> possible_strings;
+	vector<vector<vector<int>>> possible_passwords;
 	vector<vector<int>> ascii_values;
-	decrypt_password_recursive_string(password, 0, possible_strings, ascii_values);
+	decrypt_password_recursive_string(password, 0, possible_passwords, ascii_values);
 
 	ifstream english_dictionary;
 	english_dictionary.open(file_name.c_str());
@@ -87,22 +96,22 @@ vector<string> PasswordSecurity::decrypt_string(string password, const string fi
 	while(getline(english_dictionary, myText)) {
 		english_words.emplace_back(myText);
 	}
-	vector<vector<vector<string>>> possible_passwords;
-	for (auto password_it = possible_strings.begin(); password_it < possible_strings.end(); password_it++) {
+	vector<vector<vector<string>>> possible_passwords_strings;
+	for (auto password_it = possible_passwords.begin(); password_it < possible_passwords.end(); password_it++) {
 
 		int last_word_pos = 0;
 		vector<vector<vector<int>>> words;
-		for (auto string_it = (*password_it).begin(); string_it < (*password_it).end(); string_it++) {
-			if (((*string_it)[0] == 32 && (*string_it).size() > 0) || string_it + 1 == (*password_it).end()) {
+		for (auto char_it = (*password_it).begin(); char_it < (*password_it).end(); char_it++) {
+			if (((*char_it)[0] == 32 && (*char_it).size() > 0) || char_it + 1 == (*password_it).end()) {
 
 				auto word_begin = (*password_it).begin() + last_word_pos;
-				auto word_end = (*password_it).begin() + (string_it - (*password_it).begin());
-				if (string_it + 1 == (*password_it).end()) {
+				auto word_end = (*password_it).begin() + (char_it - (*password_it).begin());
+				if (char_it + 1 == (*password_it).end()) {
 					word_end = (*password_it).end();
 				}
 
 				vector<vector<int>> word(word_begin, word_end);
-				last_word_pos = string_it - (*password_it).begin() + 1;
+				last_word_pos = char_it - (*password_it).begin() + 1;
 				words.emplace_back(word);		
 			}
 		}
@@ -133,11 +142,11 @@ vector<string> PasswordSecurity::decrypt_string(string password, const string fi
 		vector<vector<string>> possible_sentence_combinations;
 		combinations<string>(possible_sentences, current_sentence, possible_sentence_combinations);
 
-		possible_passwords.emplace_back(possible_sentence_combinations);
+		possible_passwords_strings.emplace_back(possible_sentence_combinations);
 	}
 
 	vector<string> passwords;
-	for (auto it = possible_passwords.begin(); it < possible_passwords.end(); it++) {
+	for (auto it = possible_passwords_strings.begin(); it < possible_passwords_strings.end(); it++) {
 		for (auto pass_it = (*it).begin(); pass_it < (*it).end(); pass_it++) {
 			string password;
 			for (auto word_it = (*pass_it).begin(); word_it < (*pass_it).end(); word_it++) {
@@ -153,20 +162,23 @@ vector<string> PasswordSecurity::decrypt_string(string password, const string fi
 
 void PasswordSecurity::decrypt_password_recursive(string password, int offset, vector<vector<vector<int>>>& possible_passwords, vector<vector<int>>& current_password_possibility) {
 	
-	if(password.size() == 0) {
+	if (password.size() == 0) {
 		possible_passwords.emplace_back(current_password_possibility);
 		return;
 	}
 
 	string current_numbers;
 	int count = 0;
+	vector<int> ascii_values;
 	while (current_numbers.size() < 3 && !(current_numbers == password)) {
 		current_numbers += password[count];
 		if (std::stoi(current_numbers) == 0 && current_password_possibility.size() > 0) return;
-		vector<int> ascii_values_matching = get_ascii_list_from_collatz(std::stoi(current_numbers), offset);
-		if (!(ascii_values_matching.size() == 0)) {
-			current_password_possibility.emplace_back(ascii_values_matching);
-			decrypt_password_recursive(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_passwords, current_password_possibility);
+		auto ascii_value_search = collatz_multiple_ascii_result.find(make_pair(std::stoi(current_numbers), offset));
+		ascii_value_search != collatz_multiple_ascii_result.end() ? ascii_values = ascii_value_search->second : ascii_values = vector<int>();
+
+		if (!(ascii_values.size() == 0)) {
+			current_password_possibility.emplace_back(ascii_values);
+			decrypt_password_recursive_string(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_passwords, current_password_possibility);
 			current_password_possibility.pop_back();
 		}
 		count++;
@@ -174,7 +186,6 @@ void PasswordSecurity::decrypt_password_recursive(string password, int offset, v
 }
 
 void PasswordSecurity::decrypt_password_recursive_single(string password, int offset, vector<int>& possible_password, vector<int>& current_password_possibility) {
-
 	if (possible_password.size() > 0) {
 		return;
 	}
@@ -186,15 +197,22 @@ void PasswordSecurity::decrypt_password_recursive_single(string password, int of
 
 	string current_numbers;
 	int count = 0;
-	while (current_numbers.size() < 3 && !(current_numbers == password)) {
+	int ascii_value = 0;
+	while (current_numbers.size() < 3 && possible_password.size() < 1) {
 		current_numbers += password[count];
+
 		if (std::stoi(current_numbers) == 0 && current_password_possibility.size() > 0) return;
-		int ascii_value = get_ascii_from_collatz(std::stoi(current_numbers), offset);
+
+		auto ascii_value_search = collatz_first_ascii_result.find(make_pair(std::stoi(current_numbers), offset));
+		ascii_value_search != collatz_first_ascii_result.end() ? ascii_value = ascii_value_search->second : ascii_value = -1;
+
 		if (ascii_value != -1) {
 			current_password_possibility.emplace_back(ascii_value);
 			decrypt_password_recursive_single(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_password, current_password_possibility);
 			current_password_possibility.pop_back();
 		}
+
+		if (current_numbers == password) return;
 		count++;
 	}
 }
@@ -208,12 +226,15 @@ void PasswordSecurity::decrypt_password_recursive_string(string password, int of
 
 	string current_numbers;
 	int count = 0;
+	vector<int> ascii_values;
 	while (current_numbers.size() < 3 && !(current_numbers == password)) {
 		current_numbers += password[count];
 		if (std::stoi(current_numbers) == 0 && current_password_possibility.size() > 0) return;
-		vector<int> ascii_values_matching = get_ascii_string_list_from_collatz(std::stoi(current_numbers), offset);
-		if (!(ascii_values_matching.size() == 0)) {
-			current_password_possibility.emplace_back(ascii_values_matching);
+		auto ascii_value_search = collatz_multiple_sentence_ascii_result.find(make_pair(std::stoi(current_numbers), offset));
+		ascii_value_search != collatz_multiple_sentence_ascii_result.end() ? ascii_values = ascii_value_search->second : ascii_values = vector<int>();
+
+		if (!(ascii_values.size() == 0)) {
+			current_password_possibility.emplace_back(ascii_values);
 			decrypt_password_recursive_string(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_passwords, current_password_possibility);
 			current_password_possibility.pop_back();
 		}
@@ -251,4 +272,111 @@ vector<int> PasswordSecurity::get_ascii_string_list_from_collatz(int collatzNum,
 		}
 	}
 	return ascii_values;
+}
+
+void PasswordSecurity::generate_collatz_ascii_values() {
+	set<int> possible_values;
+	int max_collatz = 0;
+	for (int i = 1; i < 256; i++) {
+		int collatz_value = collatz(i);
+		possible_values.insert(collatz_value);
+		if (collatz_value > max_collatz) max_collatz = collatz_value;
+	}
+
+	int max_iter = max_collatz;
+	for (int i = 256; i < 256 + max_iter; ++i) {
+		int collatz_value = collatz(i);
+		possible_values.insert(collatz_value);
+		if (collatz_value > max_collatz) max_collatz = collatz_value;
+	}
+
+	int test = 256 + max_collatz;
+	for (int i = 256; i < 256 + max_collatz; ++i) {
+		possible_values.insert(collatz(i));
+	}
+
+	for (auto it = possible_values.begin(); it != possible_values.end(); ++it) {
+		for (int i = 1; i < 256; i++) {
+			collatz_first_ascii_result.insert(make_pair(make_pair(collatz(i + *it), *it), i));
+		}
+	}
+}
+
+void PasswordSecurity::generate_collatz_multiple_ascii_values() {
+	set<int> possible_values;
+	int max_collatz = 0;
+	for (int i = 1; i < 256; i++) {
+		int collatz_value = collatz(i);
+		possible_values.insert(collatz_value);
+		if (collatz_value > max_collatz) max_collatz = collatz_value;
+	}
+
+	int max_iter = max_collatz;
+	for (int i = 256; i < 256 + max_iter; ++i) {
+		int collatz_value = collatz(i);
+		possible_values.insert(collatz_value);
+		if (collatz_value > max_collatz) max_collatz = collatz_value;
+	}
+
+	int test = 256 + max_collatz;
+	for (int i = 256; i < 256 + max_collatz; ++i) {
+		possible_values.insert(collatz(i));
+	}
+
+	for (auto it = possible_values.begin(); it != possible_values.end(); ++it) {
+		for (int i = 1; i < 256; i++) {
+			pair<int, int> collatz_and_offset = make_pair(collatz(i + *it), *it);
+			auto ascii_value_search = collatz_multiple_ascii_result.find(collatz_and_offset);
+			if (ascii_value_search != collatz_multiple_ascii_result.end()) {
+				ascii_value_search->second.emplace_back(i);
+			}
+			else {
+				vector<int> ascii_values = { i };
+				collatz_multiple_ascii_result.insert(make_pair(collatz_and_offset, ascii_values));
+			}
+		}
+	}
+
+	return;
+}
+
+void PasswordSecurity::generate_collatz_multiple_sentence_ascii_values() {
+	set<int> possible_values;
+	int max_collatz = 0;
+	for (int i = 1; i < 256; i++) {
+		int collatz_value = collatz(i);
+		possible_values.insert(collatz_value);
+		if (collatz_value > max_collatz) max_collatz = collatz_value;
+	}
+
+	int max_iter = max_collatz;
+	for (int i = 256; i < 256 + max_iter; ++i) {
+		int collatz_value = collatz(i);
+		possible_values.insert(collatz_value);
+		if (collatz_value > max_collatz) max_collatz = collatz_value;
+	}
+
+	int test = 256 + max_collatz;
+	for (int i = 256; i < 256 + max_collatz; ++i) {
+		possible_values.insert(collatz(i));
+	}
+
+	for (auto it = possible_values.begin(); it != possible_values.end(); ++it) {
+		for (int i = 32; i < 123; i++) {
+			if (i > 32 && i < 63) {
+				continue;
+			}
+			pair<int, int> collatz_and_offset = make_pair(collatz(i + *it), *it);
+			auto ascii_value_search = collatz_multiple_sentence_ascii_result.find(collatz_and_offset);
+			if (ascii_value_search != collatz_multiple_sentence_ascii_result.end()) {
+				ascii_value_search->second.emplace_back(i);
+			}
+			else {
+				vector<int> ascii_values = { i };
+				collatz_multiple_sentence_ascii_result.insert(make_pair(collatz_and_offset, ascii_values));
+			}
+		}
+	}
+
+	return;
 }

@@ -95,7 +95,9 @@ void option_decrypt_password() {
 
 void option_decrypt_sentence() {
 	vector<string> ten_marks;
-	ten_marks = PasswordSecurity::decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101", "words.txt");
+	PasswordSecurity test;
+	test.generate_collatz_multiple_sentence_ascii_values();
+	ten_marks = test.decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101", "words.txt");
 
 	for (auto it = ten_marks.begin(); it < ten_marks.end(); it++) {
 		std::cout << *it << endl;
@@ -132,8 +134,10 @@ int main(){
 			break;
 		case(6):
 			exit = true;
+			break;
 		}
-		menu_option();
+		if (!exit)
+			menu_option();
 		cout << endl;
 	}
 

@@ -79,7 +79,7 @@ void PasswordTesting::TestPasswords(const string file_name) {
 		
 		if ((i + 1) % 10000 == 0) {
 			cout << "-----------------------------------------------------------" << endl;
-			cout << i + 1 - 10000 << "to" << i + 1 << " percent cracked(" << successAmount/100 << "%), avg time: " << average / 10000 << "ms" << endl;
+			cout << i + 1 - 10000 << "to" << i + 1 << " percent cracked(" << successAmount/10000 << "%), avg time: " << average / 10000 << "ms" << endl;
 			cout << "-----------------------------------------------------------" << endl;
 			cout << endl;
 			successAmount = 0;
