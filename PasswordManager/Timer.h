@@ -1,8 +1,7 @@
-#pragma once
-#include <chrono>
-
 #ifndef TIMER_H
 #define TIMER_H
+
+#include <chrono>
 
 class Timer
 {

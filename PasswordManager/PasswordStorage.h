@@ -1,7 +1,6 @@
 #ifndef PASSWORDSTORAGE_H
 #define PASSWORDSTORAGE_H
 
-#pragma once
 #include "FileStorage.h"
 #include <vector>
 using namespace std;

@@ -1,7 +1,6 @@
 #ifndef ACCOUNTSTORAGE_H
 #define ACCOUNTSTORAGE_H
 
-#pragma once
 #include <map>
 #include "FileStorage.h"
 using namespace std;

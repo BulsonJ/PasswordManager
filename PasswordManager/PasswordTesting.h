@@ -1,7 +1,6 @@
 #ifndef PASSWORDTESTING_H
 #define PASSWORDTESTING_H
 
-#pragma once
 #include <string>
 #include <vector>
 using namespace std;

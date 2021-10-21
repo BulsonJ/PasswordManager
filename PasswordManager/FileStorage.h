@@ -1,7 +1,6 @@
 #ifndef FILESTORAGE_H
 #define FILESTORAGE_H
 
-#pragma once
 #include <string>
 #include <fstream>
 #include <ostream>
