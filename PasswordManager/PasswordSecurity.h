@@ -17,6 +17,7 @@ protected:
 	static int collatz(const int input);
 	static int collatz(const int input, const int count);
 
+	static void decrypt_password_recursive(string rest_of_password, int offset);
 	static void decrypt_password_recursive(string rest_of_password, int offset, vector<vector<vector<int>>>& password_possibilities, vector<vector<int>>& current_password_possibility);
 	static void decrypt_password_recursive_single(string rest_of_password, int offset, vector<int>& password_possibility, vector<int>& current_password_possibility);
 	static void decrypt_password_recursive_string(string rest_of_password, int offset, vector<vector<vector<int>>>& password_possibilities, vector<vector<int>>& current_password_possibility);

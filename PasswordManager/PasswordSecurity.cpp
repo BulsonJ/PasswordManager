@@ -1,7 +1,6 @@
 #include "PasswordSecurity.h"
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <algorithm>
 #include "Timer.h"
 
@@ -49,7 +48,6 @@ vector<vector<vector<int>>> PasswordSecurity::decrypt_password(string password) 
 	return words;
 }
 
-
 vector<int> PasswordSecurity::decrypt_password_first_result(string password) {
 	vector<int> words;
 	vector<int> ascii_values;
@@ -89,12 +87,11 @@ vector<string> PasswordSecurity::decrypt_string(string password) {
 	while(getline(english_dictionary, myText)) {
 		english_words.emplace_back(myText);
 	}
-	vector<vector<vector<string>>> strings;
+	vector<vector<vector<string>>> possible_passwords;
 	for (auto password_it = possible_strings.begin(); password_it < possible_strings.end(); password_it++) {
 
 		int last_word_pos = 0;
-		vector<vector<string>> final_sentence;
-
+		vector<vector<vector<int>>> words;
 		for (auto string_it = (*password_it).begin(); string_it < (*password_it).end(); string_it++) {
 			if (((*string_it)[0] == 32 && (*string_it).size() > 0) || string_it + 1 == (*password_it).end()) {
 
@@ -106,37 +103,41 @@ vector<string> PasswordSecurity::decrypt_string(string password) {
 
 				vector<vector<int>> word(word_begin, word_end);
 				last_word_pos = string_it - (*password_it).begin() + 1;
-
-				vector<int> current_word_combination;
-				vector<vector<int>> all_combinations_of_word;
-				combinations<int>(word, current_word_combination, all_combinations_of_word);
-
-				vector<string> possible_passwords;
-				for (auto word_it = all_combinations_of_word.begin(); word_it < all_combinations_of_word.end(); word_it++) {
-					string word;
-					for (auto char_it = (*word_it).begin(); char_it < (*word_it).end(); char_it++) {
-						word += (*char_it);
-					}
-					string lowercase_string = word;
-					std::transform(lowercase_string.begin(), lowercase_string.end(), lowercase_string.begin(), ::tolower);
-
-					if (std::find(english_words.begin(), english_words.end(), lowercase_string) != english_words.end()) {
-						possible_passwords.emplace_back(word);
-					}
-				}
-				final_sentence.emplace_back(possible_passwords);
+				words.emplace_back(word);		
 			}
 		}
 
-		vector<string> current_word;
-		vector<vector<string>> final_words;
-		combinations<string>(final_sentence, current_word, final_words);
+		vector<vector<string>> possible_sentences;
+		for (auto word_index_it = words.begin(); word_index_it < words.end(); word_index_it++) {
+			vector<int> current_word_combination;
+			vector<vector<int>> all_combinations_of_word;
+			combinations<int>(*word_index_it, current_word_combination, all_combinations_of_word);
 
-		strings.emplace_back(final_words);
+			vector<string> possible_passwords;
+			for (auto word_it = all_combinations_of_word.begin(); word_it < all_combinations_of_word.end(); word_it++) {
+				string word;
+				for (auto char_it = (*word_it).begin(); char_it < (*word_it).end(); char_it++) {
+					word += (*char_it);
+				}
+				string lowercase_string = word;
+				std::transform(lowercase_string.begin(), lowercase_string.end(), lowercase_string.begin(), ::tolower);
+
+				if (std::find(english_words.begin(), english_words.end(), lowercase_string) != english_words.end()) {
+					possible_passwords.emplace_back(word);
+				}
+			}
+			possible_sentences.emplace_back(possible_passwords);
+		}
+
+		vector<string> current_sentence;
+		vector<vector<string>> possible_sentence_combinations;
+		combinations<string>(possible_sentences, current_sentence, possible_sentence_combinations);
+
+		possible_passwords.emplace_back(possible_sentence_combinations);
 	}
 
 	vector<string> passwords;
-	for (auto it = strings.begin(); it < strings.end(); it++) {
+	for (auto it = possible_passwords.begin(); it < possible_passwords.end(); it++) {
 		for (auto pass_it = (*it).begin(); pass_it < (*it).end(); pass_it++) {
 			string password;
 			for (auto word_it = (*pass_it).begin(); word_it < (*pass_it).end(); word_it++) {
@@ -148,6 +149,14 @@ vector<string> PasswordSecurity::decrypt_string(string password) {
 	}
 
 	return passwords;
+}
+
+void PasswordSecurity::decrypt_password_recursive(string password, int offset) {
+	vector<vector<vector<int>>> words;
+	vector<vector<int>> ascii_values;
+	decrypt_password_recursive(password, 0, words, ascii_values);
+	//return words;
+	return;
 }
 
 void PasswordSecurity::decrypt_password_recursive(string password, int offset, vector<vector<vector<int>>>& possible_passwords, vector<vector<int>>& current_password_possibility) {
