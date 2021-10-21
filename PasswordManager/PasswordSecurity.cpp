@@ -90,29 +90,29 @@ vector<string> PasswordSecurity::decrypt_string(string password) {
 		english_words.emplace_back(myText);
 	}
 	vector<vector<vector<string>>> strings;
-	for (auto it = possible_strings.begin(); it < possible_strings.end(); it++) {
+	for (auto password_it = possible_strings.begin(); password_it < possible_strings.end(); password_it++) {
 
 		int last_word_pos = 0;
 		vector<vector<string>> final_sentence;
 
-		for (auto string_it = (*it).begin(); string_it < (*it).end(); string_it++) {
-			if (((*string_it)[0] == 32 && (*string_it).size() > 0) || string_it + 1 == (*it).end()) {
+		for (auto string_it = (*password_it).begin(); string_it < (*password_it).end(); string_it++) {
+			if (((*string_it)[0] == 32 && (*string_it).size() > 0) || string_it + 1 == (*password_it).end()) {
 
-				auto word_begin = (*it).begin() + last_word_pos;
-				auto word_end = (*it).begin() + (string_it - (*it).begin());
-				if (string_it + 1 == (*it).end()) {
-					word_end = (*it).end();
+				auto word_begin = (*password_it).begin() + last_word_pos;
+				auto word_end = (*password_it).begin() + (string_it - (*password_it).begin());
+				if (string_it + 1 == (*password_it).end()) {
+					word_end = (*password_it).end();
 				}
 
 				vector<vector<int>> word(word_begin, word_end);
-				last_word_pos = string_it - (*it).begin() + 1;
+				last_word_pos = string_it - (*password_it).begin() + 1;
 
-				vector<int> current_word;
-				vector<vector<int>> final_words;
-				combinations<int>(word, current_word, final_words);
+				vector<int> current_word_combination;
+				vector<vector<int>> all_combinations_of_word;
+				combinations<int>(word, current_word_combination, all_combinations_of_word);
 
-				vector<string> possible_words;
-				for (auto word_it = final_words.begin(); word_it < final_words.end(); word_it++) {
+				vector<string> possible_passwords;
+				for (auto word_it = all_combinations_of_word.begin(); word_it < all_combinations_of_word.end(); word_it++) {
 					string word;
 					for (auto char_it = (*word_it).begin(); char_it < (*word_it).end(); char_it++) {
 						word += (*char_it);
@@ -121,10 +121,10 @@ vector<string> PasswordSecurity::decrypt_string(string password) {
 					std::transform(lowercase_string.begin(), lowercase_string.end(), lowercase_string.begin(), ::tolower);
 
 					if (std::find(english_words.begin(), english_words.end(), lowercase_string) != english_words.end()) {
-						possible_words.emplace_back(word);
+						possible_passwords.emplace_back(word);
 					}
 				}
-				final_sentence.emplace_back(possible_words);
+				final_sentence.emplace_back(possible_passwords);
 			}
 		}
 
@@ -150,10 +150,10 @@ vector<string> PasswordSecurity::decrypt_string(string password) {
 	return passwords;
 }
 
-void PasswordSecurity::decrypt_password_recursive(string password, int offset, vector<vector<vector<int>>>& possible_words, vector<vector<int>>& current_word_possibility) {
-
-	if (password.size() == 0) {
-		possible_words.emplace_back(current_word_possibility);
+void PasswordSecurity::decrypt_password_recursive(string password, int offset, vector<vector<vector<int>>>& possible_passwords, vector<vector<int>>& current_password_possibility) {
+	
+	if(password.size() == 0) {
+		possible_passwords.emplace_back(current_password_possibility);
 		return;
 	}
 
@@ -161,20 +161,19 @@ void PasswordSecurity::decrypt_password_recursive(string password, int offset, v
 	int count = 0;
 	while (current_numbers.size() < 3 && !(current_numbers == password)) {
 		current_numbers += password[count];
-		if (std::stoi(current_numbers) == 0) return;
-
+		if (std::stoi(current_numbers) == 0 && current_password_possibility.size() > 0) return;
 		vector<int> ascii_values_matching = get_ascii_list_from_collatz(std::stoi(current_numbers), offset);
 		if (!(ascii_values_matching.size() == 0)) {
-			current_word_possibility.emplace_back(ascii_values_matching);
-			decrypt_password_recursive(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_words, current_word_possibility);
-			current_word_possibility.pop_back();
+			current_password_possibility.emplace_back(ascii_values_matching);
+			decrypt_password_recursive(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_passwords, current_password_possibility);
+			current_password_possibility.pop_back();
 		}
 		count++;
 	}
 }
 
 void PasswordSecurity::decrypt_password_recursive_single(string password, int offset, vector<int>& possible_password, vector<int>& current_password_possibility) {
-	
+
 	if (possible_password.size() > 0) {
 		return;
 	}
@@ -189,21 +188,20 @@ void PasswordSecurity::decrypt_password_recursive_single(string password, int of
 	while (current_numbers.size() < 3 && !(current_numbers == password)) {
 		current_numbers += password[count];
 		if (std::stoi(current_numbers) == 0 && current_password_possibility.size() > 0) return;
-
 		int ascii_value = get_ascii_from_collatz(std::stoi(current_numbers), offset);
-		if (ascii_value != -1){
+		if (ascii_value != -1) {
 			current_password_possibility.emplace_back(ascii_value);
 			decrypt_password_recursive_single(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_password, current_password_possibility);
 			current_password_possibility.pop_back();
 		}
 		count++;
-	}	
+	}
 }
 
-void PasswordSecurity::decrypt_password_recursive_string(string password, int offset, vector<vector<vector<int>>>& possible_words, vector<vector<int>>& current_word_possibility) {
-
+void PasswordSecurity::decrypt_password_recursive_string(string password, int offset, vector<vector<vector<int>>>& possible_passwords, vector<vector<int>>& current_password_possibility) {
+	
 	if (password.size() == 0) {
-		possible_words.emplace_back(current_word_possibility);
+		possible_passwords.emplace_back(current_password_possibility);
 		return;
 	}
 
@@ -211,21 +209,14 @@ void PasswordSecurity::decrypt_password_recursive_string(string password, int of
 	int count = 0;
 	while (current_numbers.size() < 3 && !(current_numbers == password)) {
 		current_numbers += password[count];
-		if (std::stoi(current_numbers) == 0) return;
-
+		if (std::stoi(current_numbers) == 0 && current_password_possibility.size() > 0) return;
 		vector<int> ascii_values_matching = get_ascii_string_list_from_collatz(std::stoi(current_numbers), offset);
 		if (!(ascii_values_matching.size() == 0)) {
-			current_word_possibility.emplace_back(ascii_values_matching);
-			decrypt_password_recursive_string(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_words, current_word_possibility);
-			current_word_possibility.pop_back();
+			current_password_possibility.emplace_back(ascii_values_matching);
+			decrypt_password_recursive_string(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_passwords, current_password_possibility);
+			current_password_possibility.pop_back();
 		}
 		count++;
-	}
-}
-
-void PasswordSecurity::print_ascii_collatz_values(int offset) {
-	for (int i = 1; i < 256; i++) {
-		cout << "char value: " << i <<  " + " << offset << " :" << collatz(i + offset) << endl;
 	}
 }
 

@@ -27,8 +27,9 @@ void PasswordTesting::GeneratePasswords(const string file_name) throw (invalid_a
 		passwords[i] = PasswordSecurity::encrypt_vector_int(password);
 	}
 	
-	length = 100;
+	length = 0;
 	for (int i = 10000; i < 20000; i++) {
+		if (i % 100 == 0) length++;
 		vector<int> password;
 
 		for (int x = 0; x < length; x++) {
@@ -53,8 +54,7 @@ void PasswordTesting::TestPasswords(const string file_name) {
 	float average = 0.0;
 	int successAmount = 0;
 	bool success = false;
-	for (int i = 10000; i < 20000; ++i) {
-		//cout << *passwords[i] << endl;
+	for (int i = 0; i < 20000; ++i) {
 		test.start();
 		vector<int> password = PasswordSecurity::decrypt_password_first_result(*passwords[i]);
 		test.stop();

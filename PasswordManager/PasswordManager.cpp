@@ -75,18 +75,29 @@ void option_generate_password() {
 }
 
 void option_decrypt_password() {
-	/*vector<vector<vector<int>>> passwords;
-	passwords = PasswordSecurity::decrypt_password("20953985");*/
 
-	/*vector<string> ten_marks;
-	ten_marks = PasswordSecurity::decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101");
+	cout << "Select an option:" << endl;
+	cout << "1. Analyse sets" << endl;
+	cout << "2. Decrypt string" << endl;
 
-	for (auto it = ten_marks.begin(); it < ten_marks.end(); it++) {
-		cout << *it << endl;
-	}*/
+	int input;
+	cin >> input;
+	switch (input)
+	{
+	default:
+		break;
+	case(1):
+		PasswordTesting::TestPasswords("passwordtest.txt");
+		break;
+	case(2):
+		vector<string> ten_marks;
+		ten_marks = PasswordSecurity::decrypt_string("27322810313331033910211452912207344136146925461033281533271031012815108114101");
 
-	PasswordTesting::TestPasswords("passwordtest.txt");
-
+		for (auto it = ten_marks.begin(); it < ten_marks.end(); it++) {
+			cout << *it << endl;
+		}
+		break;
+	}
 	return;
 }
 
