@@ -19,6 +19,10 @@ int menu_input() {
 
 	string selected_option;
 	getline(cin, selected_option);
+
+	if (selected_option.find(' ') != std::string::npos)
+		return 0;
+
 	return stoi(selected_option);
 }
 
@@ -131,14 +135,17 @@ int main(){
 
 	storage = new AccountStorage("password.txt");
 
-	void (*menu_option)();
-	menu_option = nullptr;
 
 	while (!exit) {
+
+		void (*menu_option)();
+		menu_option = nullptr;
+
 		int input = menu_input();
 		switch (input)
 		{
 		default:
+			input = menu_input();
 			break;
 		case(1):
 			menu_option = &option_create_password;
@@ -159,8 +166,15 @@ int main(){
 			exit = true;
 			break;
 		}
-		if (!exit)
-			menu_option();
+
+		if (input == 0)
+			continue;
+
+		if (exit)
+			break;
+
+		menu_option();
+
 		cout << endl;
 	}
 
