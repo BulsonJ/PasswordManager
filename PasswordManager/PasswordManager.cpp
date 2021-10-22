@@ -31,7 +31,7 @@ bool check_username(const string username) {
 	return true;
 }
 
-inline string get_username() {
+string get_username() {
 	string username;
 	cout << "Please enter a username" << endl;
 	getline(cin, username);
@@ -45,7 +45,7 @@ inline string get_username() {
 	return username;
 }
 
-inline string get_password() {
+string get_password() {
 	string password;
 	cout << "Please enter a password" << endl;
 	getline(cin, password);
@@ -102,7 +102,7 @@ void option_generate_password() {
 	catch (const std::invalid_argument& e) {
 		cout << e.what() << endl;
 	}
-	cout << "Passwords saved to passwordtest.txt(" << test.elapsedTime().count() / 1000.0 << " s taken)" << endl;
+	cout << "Passwords saved to passwordtest.txt(" << test.elapsedTime() / 1000.0 << " s taken)" << endl;
 }
 
 void option_decrypt_password() {
@@ -119,7 +119,8 @@ void option_decrypt_sentence() {
 	catch (const std::invalid_argument& e) {
 		cout << e.what() << endl;
 	}
-	auto func = [](string test) { cout << test << endl; };
+
+	auto func = [](string print) { cout << print << endl; };
 	for (auto it = sentence.begin(); it < sentence.end(); it++) {
 		func(*it);
 	}

@@ -9,7 +9,7 @@ PasswordStorage::~PasswordStorage() {
 }
 
 void PasswordStorage::save_to_file(const string password) throw (invalid_argument) {
-	data_file.open(file_name.c_str(), ios::out | ios::trunc);
+	data_file.open(file_name, ios::out | ios::trunc);
 
 	if (data_file.fail())
 		throw invalid_argument("no file exists " + file_name);
@@ -20,7 +20,7 @@ void PasswordStorage::save_to_file(const string password) throw (invalid_argumen
 }
 
 void PasswordStorage::save_passwords_to_file(const string* passwords) throw (invalid_argument) {
-	data_file.open(file_name.c_str(), ios::out | ios::trunc);
+	data_file.open(file_name, ios::out | ios::trunc);
 
 	if (data_file.fail())
 		throw invalid_argument("no file exists " + file_name);
@@ -34,7 +34,7 @@ void PasswordStorage::save_passwords_to_file(const string* passwords) throw (inv
 
 
 string** PasswordStorage::read_from_file() throw (invalid_argument){
-	data_file.open(file_name.c_str(), ios::in | ios::app);
+	data_file.open(file_name, ios::in | ios::app);
 
 	if (data_file.fail())
 		throw invalid_argument("no file exists " + file_name);
@@ -47,6 +47,12 @@ string** PasswordStorage::read_from_file() throw (invalid_argument){
 		passwords[count] = new string(password);
 		count++;
 	}
+
+	if (count == 0)
+		throw invalid_argument("no passwords in file " + file_name);
+
+	if (count != 20000)
+		throw invalid_argument("not enough/too many passwords in file " + file_name);
 
 	data_file.close();
 	return passwords;

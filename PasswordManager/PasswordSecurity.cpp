@@ -130,16 +130,19 @@ vector<string> PasswordSecurity::decrypt_string(const string password, const str
 	decrypt_password_recursive_string(password, 0, possible_passwords, ascii_values);
 
 	ifstream english_dictionary;
-	english_dictionary.open(file_name.c_str());
+	english_dictionary.open(file_name);
 
 	if (english_dictionary.fail()) 
-		throw invalid_argument("no dictionary file available" + file_name);
+		throw invalid_argument("no dictionary file available: " + file_name);
 
 	string myText;
 	vector<string> english_words;
 	while(getline(english_dictionary, myText)) {
 		english_words.emplace_back(myText);
 	}
+
+	if (english_words.size() == 0)
+		throw invalid_argument("no words in dictionary: " + file_name);
 
 	vector<vector<vector<string>>> possible_passwords_strings;
 	for (auto password_it = possible_passwords.begin(); password_it < possible_passwords.end(); password_it++) {

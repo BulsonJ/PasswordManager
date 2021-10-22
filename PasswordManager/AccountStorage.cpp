@@ -2,7 +2,7 @@
 
 AccountStorage::AccountStorage(string file_name) throw (invalid_argument) : FileStorage(file_name) {
 	fstream passwordFile;
-	passwordFile.open(file_name.c_str(), ios::in | ios::app);
+	passwordFile.open(file_name, ios::in | ios::app);
 
 	if (passwordFile.fail())
 		throw invalid_argument("no file exists " + file_name);
@@ -35,7 +35,7 @@ string AccountStorage::get_password(const string username) const {
 void AccountStorage::save_to_file(const string s) {
 	ofstream data_file;
 
-	data_file.open(file_name.c_str(), ios::app);
+	data_file.open(file_name, ios::app);
 
 	if (data_file.fail())
 		throw invalid_argument("no file exists " + file_name);
@@ -53,7 +53,7 @@ void AccountStorage::save_to_file(const string username, const string password) 
 
 	ofstream data_file;
 
-	data_file.open(file_name.c_str(), ios::app);
+	data_file.open(file_name, ios::app);
 
 	if (data_file.fail())
 		throw invalid_argument("no file exists " + file_name);

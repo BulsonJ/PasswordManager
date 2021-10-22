@@ -10,7 +10,7 @@ public:
 	~Timer() {};
 	void start();
 	void stop();
-	std::chrono::duration<double, std::milli> elapsedTime() { return std::chrono::duration<double, std::milli>(end_time - start_time); };
+	double elapsedTime() { return std::chrono::duration<double, std::milli>(end_time - start_time).count(); };
 protected:
 	std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
 	std::chrono::time_point<std::chrono::high_resolution_clock> end_time;
