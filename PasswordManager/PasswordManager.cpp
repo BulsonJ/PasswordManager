@@ -107,7 +107,6 @@ void option_generate_password() {
 
 void option_decrypt_password() {
 	PasswordTesting::TestPasswords("passwordtest.txt");
-	return;
 }
 
 void option_decrypt_sentence() {
@@ -120,11 +119,10 @@ void option_decrypt_sentence() {
 	catch (const std::invalid_argument& e) {
 		cout << e.what() << endl;
 	}
-
+	auto func = [](string test) { cout << test << endl; };
 	for (auto it = sentence.begin(); it < sentence.end(); it++) {
-		std::cout << *it << endl;
+		func(*it);
 	}
-	return;
 }
 
 int main(){
@@ -164,6 +162,9 @@ int main(){
 			menu_option();
 		cout << endl;
 	}
+
+	delete storage;
+	storage = nullptr;
 
 	return 0;
 }
