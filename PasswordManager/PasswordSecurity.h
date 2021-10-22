@@ -30,17 +30,13 @@ protected:
 	map<pair<int, int>, vector<int>> collatz_multiple_ascii_result;
 	map<pair<int, int>, vector<int>> collatz_multiple_sentence_ascii_result;
 
-	void decrypt_password_recursive(string rest_of_password, int offset, vector<vector<vector<int>>>& password_possibilities, vector<vector<int>>& current_password_possibility);
-	void decrypt_password_recursive_single(string rest_of_password, int offset, vector<int>& password_possibility, vector<int>& current_password_possibility);
-	void decrypt_password_recursive_string(string rest_of_password, int offset, vector<vector<vector<int>>>& password_possibilities, vector<vector<int>>& current_password_possibility);
+	void decrypt_password_recursive(string password, int offset, vector<vector<vector<int>>>& password_possibilities, vector<vector<int>>& current_password_possibility);
+	void decrypt_password_recursive_single(string password, int offset, vector<int>& password_possibility, vector<int>& current_password_possibility);
+	void decrypt_password_recursive_string(string password, int offset, vector<vector<vector<int>>>& password_possibilities, vector<vector<int>>& current_password_possibility);
 
 	static vector<vector<vector<int>>> split_sentence_into_words(vector<vector<int>> sentence);
 	static vector<string> password_combination_to_strings(vector<vector<vector<string>>> possible_passwords_strings);
 	static string convert_vector_to_word(vector<int> word);
-
-	static int get_ascii_from_collatz(int collatz, int offset);
-	static vector<int> get_ascii_list_from_collatz(int collatz, int offset);
-	static vector<int> get_ascii_string_list_from_collatz(int collatz, int offset);
 };
 
 #endif

@@ -21,9 +21,17 @@ int menu_input() {
 	getline(cin, selected_option);
 
 	if (selected_option.find(' ') != std::string::npos)
-		return 0;
+		return -1;
 
-	return stoi(selected_option);
+	int option = -1;
+	try {
+		option = stoi(selected_option);
+	}
+	catch (const std::invalid_argument& e) {
+		return -1;
+	}
+
+	return option;
 }
 
 bool check_username(const string username) {
@@ -110,10 +118,12 @@ void option_generate_password() {
 }
 
 void option_decrypt_password() {
+	cout << "Cracking passwords:" << endl;
 	PasswordTesting::TestPasswords("passwordtest.txt");
 }
 
 void option_decrypt_sentence() {
+	cout << "Decrypting sentence..." << endl;
 	vector<string> sentence;
 	PasswordSecurity test;
 	test.generate_collatz_multiple_sentence_ascii_values();
@@ -124,10 +134,14 @@ void option_decrypt_sentence() {
 		cout << e.what() << endl;
 	}
 
+	cout << "-----------------------------------------------------------" << endl;
+	cout << "All possible combinations of the sentence: " << endl;
+	cout << "-----------------------------------------------------------" << endl;
 	auto func = [](string print) { cout << print << endl; };
 	for (auto it = sentence.begin(); it < sentence.end(); it++) {
 		func(*it);
 	}
+	cout << "-----------------------------------------------------------" << endl;
 }
 
 int main(){
@@ -145,7 +159,8 @@ int main(){
 		switch (input)
 		{
 		default:
-			input = menu_input();
+			cout << endl << "Please enter a valid option." << endl;
+			input = -1;
 			break;
 		case(1):
 			menu_option = &option_create_password;
@@ -167,7 +182,7 @@ int main(){
 			break;
 		}
 
-		if (input == 0)
+		if (input == -1)
 			continue;
 
 		if (exit)
