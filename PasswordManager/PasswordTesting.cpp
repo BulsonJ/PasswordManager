@@ -64,6 +64,13 @@ void PasswordTesting::TestPasswords(const string file_name) {
 	test.stop();
 	cout << "Generated possible collatz values, took" << test.elapsedTime().count() << "ms." << endl;
 
+	/*cracker.generate_collatz_multiple_ascii_values();
+	vector<vector<vector<int>>> passwordstest = cracker.decrypt_password("20953985");
+	vector<int> testtt;
+	for (auto it = passwordstest[0].begin(); it < passwordstest[0].end(); it++) {
+		testtt.emplace_back((*it)[0]);
+	}
+	string crackedPassword = PasswordSecurity::encrypt_vector_int(testtt);*/
 
 	int success_amounts[200] = {0};
 	double average_amounts[200] = {0.0};
@@ -71,7 +78,7 @@ void PasswordTesting::TestPasswords(const string file_name) {
 
 	bool success = false;
 	cout << "-----------------------------------------------------------" << endl;
-	for (int i = 0; i < 20000; ++i) {
+	for (int i = 1000; i < 20000; ++i) {
 		test.start();
 		vector<int> password = cracker.decrypt_password_first_result(*passwords[i]);
 		test.stop();

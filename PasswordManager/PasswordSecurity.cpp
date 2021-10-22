@@ -194,7 +194,7 @@ void PasswordSecurity::decrypt_password_recursive(string password, int offset, v
 
 		if (!(ascii_values.size() == 0)) {
 			current_password_possibility.emplace_back(ascii_values);
-			decrypt_password_recursive_string(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_passwords, current_password_possibility);
+			decrypt_password_recursive(password.substr(count + 1, password.size() - count), std::stoi(current_numbers), possible_passwords, current_password_possibility);
 			current_password_possibility.pop_back();
 		}
 		count++;
@@ -214,7 +214,7 @@ void PasswordSecurity::decrypt_password_recursive_single(string password, int of
 	string current_numbers;
 	int count = 0;
 	int ascii_value = 0;
-	while (current_numbers.size() < 3 && possible_password.size() < 1) {
+	while (current_numbers.size() < 3 && possible_password.size() < 1 && !(current_numbers == password)) {
 		current_numbers += password[count];
 
 		if (std::stoi(current_numbers) == 0 && current_password_possibility.size() > 0) return;
@@ -293,21 +293,21 @@ vector<int> PasswordSecurity::get_ascii_string_list_from_collatz(int collatzNum,
 void PasswordSecurity::generate_collatz_ascii_values() {
 	set<int> possible_values;
 	int max_collatz = 0;
+	int max_iter = 256;
 	for (int i = 1; i < 256; i++) {
 		int collatz_value = collatz(i);
 		possible_values.insert(collatz_value);
 		if (collatz_value > max_collatz) max_collatz = collatz_value;
 	}
 
-	int max_iter = max_collatz;
-	for (int i = 256; i < 256 + max_iter; ++i) {
+	max_iter = max_collatz + 256;
+	for (int i = 256; i < max_iter; ++i) {
 		int collatz_value = collatz(i);
 		possible_values.insert(collatz_value);
 		if (collatz_value > max_collatz) max_collatz = collatz_value;
 	}
 
-	int test = 256 + max_collatz;
-	for (int i = 256; i < 256 + max_collatz; ++i) {
+	for (int i = max_iter; i < 256 + max_collatz; ++i) {
 		possible_values.insert(collatz(i));
 	}
 
@@ -321,21 +321,21 @@ void PasswordSecurity::generate_collatz_ascii_values() {
 void PasswordSecurity::generate_collatz_multiple_ascii_values() {
 	set<int> possible_values;
 	int max_collatz = 0;
+	int max_iter = 256;
 	for (int i = 1; i < 256; i++) {
 		int collatz_value = collatz(i);
 		possible_values.insert(collatz_value);
 		if (collatz_value > max_collatz) max_collatz = collatz_value;
 	}
 
-	int max_iter = max_collatz;
-	for (int i = 256; i < 256 + max_iter; ++i) {
+	max_iter = max_collatz + 256;
+	for (int i = 256; i < max_iter; ++i) {
 		int collatz_value = collatz(i);
 		possible_values.insert(collatz_value);
 		if (collatz_value > max_collatz) max_collatz = collatz_value;
 	}
 
-	int test = 256 + max_collatz;
-	for (int i = 256; i < 256 + max_collatz; ++i) {
+	for (int i = max_iter; i < 256 + max_collatz; ++i) {
 		possible_values.insert(collatz(i));
 	}
 
@@ -359,21 +359,21 @@ void PasswordSecurity::generate_collatz_multiple_ascii_values() {
 void PasswordSecurity::generate_collatz_multiple_sentence_ascii_values() {
 	set<int> possible_values;
 	int max_collatz = 0;
+	int max_iter = 256;
 	for (int i = 1; i < 256; i++) {
 		int collatz_value = collatz(i);
 		possible_values.insert(collatz_value);
 		if (collatz_value > max_collatz) max_collatz = collatz_value;
 	}
 
-	int max_iter = max_collatz;
-	for (int i = 256; i < 256 + max_iter; ++i) {
+	max_iter = max_collatz + 256;
+	for (int i = 256; i < max_iter; ++i) {
 		int collatz_value = collatz(i);
 		possible_values.insert(collatz_value);
 		if (collatz_value > max_collatz) max_collatz = collatz_value;
 	}
 
-	int test = 256 + max_collatz;
-	for (int i = 256; i < 256 + max_collatz; ++i) {
+	for (int i = max_iter; i < 256 + max_collatz; ++i) {
 		possible_values.insert(collatz(i));
 	}
 
