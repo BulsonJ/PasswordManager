@@ -4,7 +4,6 @@
 #include "PasswordSecurity.h"
 #include "PasswordTesting.h"
 #include "Timer.h"
-using namespace std;
 
 AccountStorage* storage = nullptr;
 
@@ -105,6 +104,7 @@ void option_check_password() {
 }
 
 void option_generate_password() {
+	cout << "Generating passwords..." << endl;
 	Timer test;
 	try {
 		test.start();
@@ -148,7 +148,6 @@ int main(){
 	bool exit = false;
 
 	storage = new AccountStorage("password.txt");
-
 
 	while (!exit) {
 
